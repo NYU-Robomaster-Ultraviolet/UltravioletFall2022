@@ -1,0 +1,119 @@
+# Copyright (c) 2020-2021 Advanced Robotics at the University of Washington <robomstr@uw.edu>
+#
+# This file is part of Taproot.
+#
+# Taproot is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Taproot is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
+
+import sys
+import os
+
+sys.path.append(repopath("scripts/lbuild-helpers"))
+
+MCU_VARIANTS_BY_BOARD = {
+    "rm-dev-board-a": "stm32f427iih6",
+    "rm-dev-board-c": "stm32f407igh6",
+}
+
+DEFAULT_MODM_OPTIONS_BY_BOARD = {
+    "rm-dev-board-a": "\
+        modm:platform:uart:1:buffer.rx 256\n\
+        modm:platform:uart:1:buffer.tx 256\n\
+        modm:platform:uart:2:buffer.rx 256\n\
+        modm:platform:uart:2:buffer.tx 256\n\
+        modm:platform:uart:3:buffer.tx 256\n\
+        modm:platform:uart:3:buffer.rx 256\n\
+        modm:platform:uart:6:buffer.rx 256\n\
+        modm:platform:uart:6:buffer.tx 256\n\
+        modm:platform:uart:7:buffer.tx 256\n\
+        modm:platform:uart:7:buffer.rx 256\n\
+        modm:platform:uart:8:buffer.tx 256\n\
+        modm:platform:uart:8:buffer.rx 256",
+    "rm-dev-board-c": "\
+        modm:platform:uart:1:buffer.rx 256\n\
+        modm:platform:uart:1:buffer.tx 256\n\
+        modm:platform:uart:3:buffer.tx 256\n\
+        modm:platform:uart:3:buffer.rx 256\n\
+        modm:platform:uart:6:buffer.rx 256\n\
+        modm:platform:uart:6:buffer.tx 256",
+}
+
+def get_modm_repo_lb_file() -> str:
+    '''
+    Returns a path to the modm submodule's repo.lb file relative to the generated taproot directory
+    '''
+    absolute_repo_lb_path = localpath('../modm/repo.lb')
+    generated_taproot_path = os.path.abspath('taproot')
+    return os.path.relpath(absolute_repo_lb_path, generated_taproot_path)
+
+from hosted_platforms import ALL_HOSTED_TARGET_NAMES
+
+def init(module):
+    module.name = ":modm-project.xml"
+    module.description = "project.xml files used to generate modm HALs"
+
+def prepare(module, options):
+    module.add_option(
+        StringOption(
+            name="modm_hal_options",
+            description=modm_hal_options_description,
+            default=""))
+
+    return True
+
+def build(env):
+    board_name = env[":dev_board"]
+    try:
+        mcu = MCU_VARIANTS_BY_BOARD[board_name]
+    except KeyError:
+        raise RuntimeError(f"Dev board {board_name} is not valid")
+
+    # set default options based on specified dev board if necessary
+    modm_hal_options = env["::modm_hal_options"]
+    if modm_hal_options == "":
+        modm_hal_options = DEFAULT_MODM_OPTIONS_BY_BOARD[board_name]
+    # split up options
+    modm_hal_options = modm_hal_options.split("\n")
+    # remove leading/trailing whitespace
+    modm_hal_options = [option.strip(" \t") for option in modm_hal_options]
+    # split up option names and values
+    modm_hal_options = [option.split(' ') for option in modm_hal_options]
+    # remove blank options
+    modm_hal_options = list(filter(lambda o: o != [""], modm_hal_options))
+    # check invalid options
+    def check_modm_option_valid(o):
+        if len(o) != 2:
+            raise ValueError(f"Option {o} has {len(o)} arguments, must have 2 arguments of the form `modm:option:name option_value`")
+    [check_modm_option_valid(o) for o in modm_hal_options]
+
+    # stringify the options
+    modm_hal_options = [f"<option name=\"{option[0]}\">{option[1]}</option>\n" for option in modm_hal_options]
+
+    env.substitutions = {
+        "modm_path": get_modm_repo_lb_file(),
+        "mcu": mcu,
+        "modm_hal_options": modm_hal_options,
+    }
+
+    env.outbasepath = "taproot"
+    env.template("project.xml.in", "project.xml")
+
+    for target in ALL_HOSTED_TARGET_NAMES:
+        env.substitutions["hosted_target"] = target
+        env.template("sim-modm/project.xml.in", f"sim-modm/{target}/project.xml")
+
+modm_hal_options_description = "\
+Add options to control modm generated files. For example, configure the modm UART buffer sizes. \
+Options will be passed to modm-specific project.xml file. Options should be of the form \
+\"modm:option:name value\". Multiple modm options may be added. They should be separated by \
+newlines. If no options specified, some default options will be used."

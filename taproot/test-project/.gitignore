@@ -1,0 +1,6 @@
+taproot
+openocd.cfg
+project.xml.log
+build
+src/drivers.hpp
+pipfile.lock
