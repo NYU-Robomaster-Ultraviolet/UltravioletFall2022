@@ -1,5 +1,4 @@
-#ifndef STANDARD_CONSTANTS_HPP_
-#define STANDARD_CONSTANTS_HPP_
+
 /**
  * @brief Definitions for operator interface constants (may change based on preference of drivers)
  *
@@ -14,18 +13,16 @@ static constexpr float USER_MOUSE_PITCH_SCALAR = (1.0f / USER_MOUSE_PITCH_MAX);
 static constexpr float USER_JOYSTICK_YAW_SCALAR = 0.3f;
 static constexpr float USER_JOYSTICK_PITCH_SCALAR = 0.15f;
 
-static constexpr float
-//M3505 motor speed PID 
-CHASSIS_MOTOR_KP = 15000.0f,
-CHASSIS_MOTOR_KI = 10.0f,
-CHASSIS_MOTOR_KD = 0.0f,
-CHASSIS_MOTOR_MAX_IOUT = 2000.0f, //max integral 
-CHASSIS_MOTOR_MAX_OUT = 16000.0f; //max output
- //CHASSIS PID VALUES
+    static constexpr float
+    //M3505 motor speed PID 
+    CHASSIS_MOTOR_KP = 15000.0f,
+    CHASSIS_MOTOR_KI = 10.0f,
+    CHASSIS_MOTOR_KD = 0.0f,
+    CHASSIS_MOTOR_MAX_IOUT = 2000.0f, //max integral 
+    CHASSIS_MOTOR_MAX_OUT = 16000.0f; //max output
 
-struct GIMBAL_PID {
     //pitch speed close-loop PID params, max out and max iout
-    static constexpr float 
+    static constexpr float
     PITCH_SPEED_PID_KP = 2000.0f, 
     PITCH_SPEED_PID_KI = 60.0f, 
     PITCH_SPEED_PID_KD = 0.0f,
@@ -53,6 +50,3 @@ struct GIMBAL_PID {
     YAW_GYRO_ABSOLUTE_PID_KD = 0.0f,// JERRY'code, chewy's pan 0.3f
     YAW_GYRO_ABSOLUTE_PID_MAX_OUT = 10.0f,  // Jerry 10.0f
     YAW_GYRO_ABSOLUTE_PID_MAX_IOUT = 0.0f;  //Jerry 0.0f
-}; //struct GIMBAL_PID
-
-#endif

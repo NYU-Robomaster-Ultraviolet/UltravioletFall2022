@@ -1,3 +1,4 @@
+#ifdef TARGET_STANDARD
 #include "control_interface.hpp"
 
 #include "tap/architecture/clock.hpp"
@@ -15,23 +16,16 @@ namespace src::control{
     float ControlInterface::getChassisXInput() {
     uint32_t updateCounter = drivers->remote.getUpdateCounter();
     uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
-
+    //updates the value receive from controller
     if (prevUpdateCounterX != updateCounter) {
         chassisXInput.update(drivers->remote.getChannel(Remote::Channel::LEFT_HORIZONTAL), currTime);
         prevUpdateCounterX = updateCounter;
     }
-
+    
+    //limits value between -1 , 1
     float analogX = limitVal<float>(chassisXInput.getInterpolatedValue(currTime), -1.0f, 1.0f);
 
-    float finalX = analogX;  // TODO: Add digital values from keyboard as well
-
-    // Scales analog values by values defined in standard_constants.hpp to speedshift input
-    //finalX *= drivers->remote.keyPressed(Remote::Key::CTRL) ? CTRL_SCALAR : 1.0f;
-    //finalX *= drivers->remote.keyPressed(Remote::Key::SHIFT) ? SHIFT_SCALAR : 1.0f;
-
-    //finalXWatch = (int8_t)(finalX * 127.0f);
-
-    return finalX;
+    return analogX;
     }
     /**
      * @brief Gets the current Y input from the operator.
@@ -42,21 +36,15 @@ namespace src::control{
     float ControlInterface::getChassisYInput() {
         uint32_t updateCounter = drivers->remote.getUpdateCounter();
         uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
-
+        //updates the value receive from controller
         if (prevUpdateCounterY != updateCounter) {
             chassisYInput.update(drivers->remote.getChannel(Remote::Channel::LEFT_VERTICAL), currTime);
             prevUpdateCounterY = updateCounter;
         }
-
+        //limits value between -1 , 1
         float analogY = limitVal<float>(chassisYInput.getInterpolatedValue(currTime), -1.0f, 1.0f);
 
-        float finalY = analogY;  // TODO: Add digital values from keyboard as well
-
-        // Scales analog values by values defined in standard_constants.hpp to speedshift input
-        //finalY *= drivers->remote.keyPressed(Remote::Key::CTRL) ? CTRL_SCALAR : 1.0f;
-        //finalY *= drivers->remote.keyPressed(Remote::Key::SHIFT) ? SHIFT_SCALAR : 1.0f;
-
-        return finalY;
+        return analogY;
     }
     /**
      * @brief Gets the current rotation input from the operator.
@@ -67,28 +55,25 @@ namespace src::control{
     float ControlInterface::getChassisRotationInput() {
         uint32_t updateCounter = drivers->remote.getUpdateCounter();
         uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
-
+        //updates the value receive from controller
         if (prevUpdateCounterRotation != updateCounter) {
             chassisRotationInput.update(drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL), currTime);
             prevUpdateCounterRotation = updateCounter;
         }
 
+        //limits value between -1 , 1
         float analogRotation = limitVal<float>(chassisRotationInput.getInterpolatedValue(currTime), -1.0f, 1.0f);
 
-        float finalRotation = analogRotation;  // TODO: Add digital values from keyboard as well
-
-        // Scales analog values by values defined in standard_constants.hpp to speedshift input
-        //finalRotation *= drivers->remote.keyPressed(Remote::Key::CTRL) ? CTRL_SCALAR : 1.0f;
-        //finalRotation *= drivers->remote.keyPressed(Remote::Key::SHIFT) ? SHIFT_SCALAR : 1.0f;
-
-        return finalRotation;
+        return analogRotation;
     }
 
     float ControlInterface::getGimbalYawInput() {
+
         return drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL);
     }
 
     float ControlInterface::getGimbalPitchInput() {
         return drivers->remote.getChannel(Remote::Channel::RIGHT_VERTICAL);
     }
-}
+} //namespace control
+#endif

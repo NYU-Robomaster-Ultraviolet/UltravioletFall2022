@@ -7,13 +7,13 @@ using namespace tap;
 
 namespace chassis
 {
-
 void ChassisSubsystem::initialize()
 {
     frontLeftMotor.initialize();
     frontRightMotor.initialize();
     backLeftMotor.initialize();
     backRightMotor.initialize();
+    setDesiredOutput(0, 0, 0);
 }
 void ChassisSubsystem::refresh() {
     updateRpmPid(&frontLeftPid, &frontLeftMotor, frontLeftDesiredRpm);
@@ -21,7 +21,7 @@ void ChassisSubsystem::refresh() {
     updateRpmPid(&backLeftPid, &backLeftMotor, backLeftDesiredRpm);
     updateRpmPid(&backRightPid, &backRightMotor, backRightDesiredRpm);
 }
-void ChassisSubsystem::updateRpmPid(modm::Pid<float>* pid, tap::motor::DjiMotor* const motor, float desiredRpm) {
+void ChassisSubsystem::updateRpmPid(modm::Pid<float>* pid, tap::motor::DjiMotor* motor, float desiredRpm) {
     pid->update(desiredRpm - motor->getShaftRPM());
     motor->setDesiredOutput(pid->getValue());
 }
@@ -43,6 +43,7 @@ void ChassisSubsystem::setDesiredOutput(float x, float y, float r)
     frontRightDesiredRpm = (x+y)*RPM_SCALE_FACTOR;
     backLeftDesiredRpm = (x+y)*RPM_SCALE_FACTOR;
     backRightDesiredRpm = (x-y)*RPM_SCALE_FACTOR;
+
 }
 
 } //namespace chassis

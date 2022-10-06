@@ -19,14 +19,15 @@ using namespace tap;
 using namespace tap::control;
 using namespace tap::communication::serial;
 using namespace chassis;
+using tap::communication::serial::Remote;
 
-namespace StandardControl{
+namespace src::control{
 // Define subsystems here ------------------------------------------------
 ChassisSubsystem chassis(drivers());
 // Robot Specific Controllers ------------------------------------------------
 
 // Define commands here ---------------------------------------------------
-ChassisMovementCommand chassisMovement(&chassis, drivers());
+ChassisMovementCommand chassisMovementCommand(&chassis, drivers());
 // Define command mappings here -------------------------------------------
 
 // Register subsystems here -----------------------------------------------
@@ -39,30 +40,31 @@ void initializeSubsystems() {
 }
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers* drivers) {
-    chassis.setDefaultCommand(&chassisMovement);
+    chassis.setDefaultCommand((&chassisMovementCommand));
 }
 // Set Commands scheduled on startup
 void startupCommands(src::Drivers* drivers) {
+    
 
 }
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers* drivers) {
     
 }
-}//namespace standardControl
+}//namespace StandardControl
 
 
 // Initialize subsystems ---------------------------------------------------
-namespace src::Control
+namespace src::control
 {
     void initializeSubsystemCommands(src::Drivers* drivers)
     {
-        StandardControl::initializeSubsystems();
-        StandardControl::registerSubsystems(drivers);
-        StandardControl::setDefaultCommands(drivers);
-        StandardControl::startupCommands(drivers);
-        StandardControl::registerIOMappings(drivers);
+        initializeSubsystems();
+        registerSubsystems(drivers);
+        setDefaultCommands(drivers);
+        startupCommands(drivers);
+        registerIOMappings(drivers);
     }
-} //namespace src::Control
+} //namespace src::control
 
 #endif
