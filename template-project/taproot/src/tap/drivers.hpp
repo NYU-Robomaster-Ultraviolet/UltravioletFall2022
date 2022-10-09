@@ -62,6 +62,7 @@
 #include "tap/motor/dji_motor_terminal_serial_handler.hpp"
 #include "tap/motor/dji_motor_tx_handler.hpp"
 #include "tap/control/command_scheduler.hpp"
+#include "controls/standard/control_interface.hpp"
 #endif
 
 namespace tap
@@ -139,6 +140,8 @@ public:
     motor::DjiMotorTxHandler djiMotorTxHandler;
     communication::sensors::imu::bmi088::Bmi088 bmi088;
     control::CommandScheduler commandScheduler;
+
+    
 #endif
 };  // class Drivers
 

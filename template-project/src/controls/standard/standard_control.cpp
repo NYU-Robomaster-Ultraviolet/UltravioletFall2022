@@ -20,7 +20,7 @@ using namespace tap::control;
 using namespace tap::communication::serial;
 using namespace chassis;
 
-namespace StandardControl{
+namespace src::control{
 // Define subsystems here ------------------------------------------------
 ChassisSubsystem chassis(drivers());
 // Robot Specific Controllers ------------------------------------------------
@@ -53,15 +53,15 @@ void registerIOMappings(src::Drivers* drivers) {
 
 
 // Initialize subsystems ---------------------------------------------------
-namespace src::Control
+namespace src::control
 {
     void initializeSubsystemCommands(src::Drivers* drivers)
     {
-        StandardControl::initializeSubsystems();
-        StandardControl::registerSubsystems(drivers);
-        StandardControl::setDefaultCommands(drivers);
-        StandardControl::startupCommands(drivers);
-        StandardControl::registerIOMappings(drivers);
+        initializeSubsystems();
+        registerSubsystems(drivers);
+        setDefaultCommands(drivers);
+        startupCommands(drivers);
+        registerIOMappings(drivers);
     }
 } //namespace src::Control
 

@@ -21,15 +21,7 @@ namespace src::control{
         prevUpdateCounterX = updateCounter;
     }
 
-    float analogX = limitVal<float>(chassisXInput.getInterpolatedValue(currTime), -1.0f, 1.0f);
-
-    float finalX = analogX;  // TODO: Add digital values from keyboard as well
-
-    // Scales analog values by values defined in standard_constants.hpp to speedshift input
-    //finalX *= drivers->remote.keyPressed(Remote::Key::CTRL) ? CTRL_SCALAR : 1.0f;
-    //finalX *= drivers->remote.keyPressed(Remote::Key::SHIFT) ? SHIFT_SCALAR : 1.0f;
-
-    //finalXWatch = (int8_t)(finalX * 127.0f);
+    float finalX = limitVal<float>(chassisXInput.getInterpolatedValue(currTime), -1.0f, 1.0f);
 
     return finalX;
     }
@@ -48,13 +40,7 @@ namespace src::control{
             prevUpdateCounterY = updateCounter;
         }
 
-        float analogY = limitVal<float>(chassisYInput.getInterpolatedValue(currTime), -1.0f, 1.0f);
-
-        float finalY = analogY;  // TODO: Add digital values from keyboard as well
-
-        // Scales analog values by values defined in standard_constants.hpp to speedshift input
-        //finalY *= drivers->remote.keyPressed(Remote::Key::CTRL) ? CTRL_SCALAR : 1.0f;
-        //finalY *= drivers->remote.keyPressed(Remote::Key::SHIFT) ? SHIFT_SCALAR : 1.0f;
+        float finalY = limitVal<float>(chassisYInput.getInterpolatedValue(currTime), -1.0f, 1.0f);
 
         return finalY;
     }
@@ -73,13 +59,7 @@ namespace src::control{
             prevUpdateCounterRotation = updateCounter;
         }
 
-        float analogRotation = limitVal<float>(chassisRotationInput.getInterpolatedValue(currTime), -1.0f, 1.0f);
-
-        float finalRotation = analogRotation;  // TODO: Add digital values from keyboard as well
-
-        // Scales analog values by values defined in standard_constants.hpp to speedshift input
-        //finalRotation *= drivers->remote.keyPressed(Remote::Key::CTRL) ? CTRL_SCALAR : 1.0f;
-        //finalRotation *= drivers->remote.keyPressed(Remote::Key::SHIFT) ? SHIFT_SCALAR : 1.0f;
+        float finalRotation = limitVal<float>(chassisRotationInput.getInterpolatedValue(currTime), -1.0f, 1.0f);
 
         return finalRotation;
     }
