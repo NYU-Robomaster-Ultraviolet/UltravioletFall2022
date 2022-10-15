@@ -121,7 +121,6 @@ static void initializeIo(src::Drivers *drivers)
 }
 
 float yaw, pitch, roll;
-float magX, magY, magZ;
 tap::communication::sensors::imu::ImuInterface::ImuState imuStatus;
 
 static void updateIo(src::Drivers *drivers)
@@ -135,7 +134,7 @@ static void updateIo(src::Drivers *drivers)
     drivers->remote.read();
     
     yaw = drivers->bmi088.getYaw();
-    pitch = drivers->bmi088.getRoll();
-    roll = drivers->bmi088.getPitch();
+    pitch = drivers->bmi088.getPitch();
+    roll = drivers->bmi088.getRoll();
     imuStatus = drivers->bmi088.getImuState();
 }

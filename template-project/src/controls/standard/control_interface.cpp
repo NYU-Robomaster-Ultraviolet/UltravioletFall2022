@@ -17,11 +17,12 @@ namespace src::control{
     uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
 
     if (prevUpdateCounterX != updateCounter) {
-        chassisXInput.update(drivers->remote.getChannel(Remote::Channel::LEFT_HORIZONTAL), currTime);
+        chassisXInput.update(drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL), currTime);
         prevUpdateCounterX = updateCounter;
     }
 
-    float finalX = limitVal<float>(chassisXInput.getInterpolatedValue(currTime), -1.0f, 1.0f);
+    //float finalX = limitVal<float>((chassisXInput.getInterpolatedValue(currTime)) * X_SENSITIVITY, -X_SENSITIVITY, X_SENSITIVITY);
+    float finalX = limitVal<float>((chassisXInput.getInterpolatedValue(currTime)), -1, 1);
 
     return finalX;
     }
@@ -36,11 +37,12 @@ namespace src::control{
         uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
 
         if (prevUpdateCounterY != updateCounter) {
-            chassisYInput.update(drivers->remote.getChannel(Remote::Channel::LEFT_VERTICAL), currTime);
+            chassisYInput.update(drivers->remote.getChannel(Remote::Channel::RIGHT_VERTICAL), currTime);
             prevUpdateCounterY = updateCounter;
         }
 
-        float finalY = limitVal<float>(chassisYInput.getInterpolatedValue(currTime), -1.0f, 1.0f);
+        //float finalY = limitVal<float>((chassisYInput.getInterpolatedValue(currTime))*Y_SENSITIVITY, -Y_SENSITIVITY, Y_SENSITIVITY);
+        float finalY = limitVal<float>((chassisYInput.getInterpolatedValue(currTime)), -1, 1);
 
         return finalY;
     }
@@ -55,20 +57,21 @@ namespace src::control{
         uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
 
         if (prevUpdateCounterRotation != updateCounter) {
-            chassisRotationInput.update(drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL), currTime);
+            chassisRotationInput.update(drivers->remote.getChannel(Remote::Channel::LEFT_HORIZONTAL), currTime);
             prevUpdateCounterRotation = updateCounter;
         }
 
-        float finalRotation = limitVal<float>(chassisRotationInput.getInterpolatedValue(currTime), -1.0f, 1.0f);
+        //float finalRotation = limitVal<float>((chassisRotationInput.getInterpolatedValue(currTime)) * Y_SENSITIVITY, -Y_SENSITIVITY, Y_SENSITIVITY);
+        float finalRotation = limitVal<float>((chassisYInput.getInterpolatedValue(currTime)), -1, 1);
 
         return finalRotation;
     }
 
     float ControlInterface::getGimbalYawInput() {
-        return drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL);
+        return drivers->remote.getChannel(Remote::Channel::LEFT_HORIZONTAL);
     }
 
     float ControlInterface::getGimbalPitchInput() {
-        return drivers->remote.getChannel(Remote::Channel::RIGHT_VERTICAL);
+        return drivers->remote.getChannel(Remote::Channel::LEFT_VERTICAL);
     }
 }

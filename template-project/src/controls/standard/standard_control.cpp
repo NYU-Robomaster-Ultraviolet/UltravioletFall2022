@@ -28,7 +28,7 @@ ChassisSubsystem chassis(drivers());
 // Define commands here ---------------------------------------------------
 ChassisMovementCommand chassisMovement(&chassis, drivers());
 // Define command mappings here -------------------------------------------
-
+HoldCommandMapping rightSwitchMid(drivers(), {&chassisMovement}, RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers){
     drivers->commandScheduler.registerSubsystem(&chassis);
@@ -39,7 +39,7 @@ void initializeSubsystems() {
 }
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers* drivers) {
-    chassis.setDefaultCommand(&chassisMovement);
+   // chassis.setDefaultCommand(&chassisMovement);
 }
 // Set Commands scheduled on startup
 void startupCommands(src::Drivers* drivers) {
@@ -47,9 +47,9 @@ void startupCommands(src::Drivers* drivers) {
 }
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers* drivers) {
-    
+    drivers->commandMapper.addMap(&rightSwitchMid);
 }
-}//namespace standardControl
+}//namespace src::control
 
 
 // Initialize subsystems ---------------------------------------------------

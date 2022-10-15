@@ -14,12 +14,15 @@ static constexpr float USER_MOUSE_PITCH_SCALAR = (1.0f / USER_MOUSE_PITCH_MAX);
 static constexpr float USER_JOYSTICK_YAW_SCALAR = 0.3f;
 static constexpr float USER_JOYSTICK_PITCH_SCALAR = 0.15f;
 
+static constexpr float CHASSIS_MOTOR_DISTANCE = 0.2f;
+static constexpr float CHASSIS_ROTATION_SET_SCALE = 0.1f;
+
 static constexpr float
 //M3505 motor speed PID 
 CHASSIS_MOTOR_KP = 20.0f,
 CHASSIS_MOTOR_KI = 0.2f,
 CHASSIS_MOTOR_KD = 0.0f,
-CHASSIS_MOTOR_MAX_IOUT = 5000.0f, //max integral 
+CHASSIS_MOTOR_MAX_IOUT = 2000.0f, //max integral 
 CHASSIS_MOTOR_MAX_OUT = 16000.0f; //max output
  //CHASSIS PID VALUES
 
