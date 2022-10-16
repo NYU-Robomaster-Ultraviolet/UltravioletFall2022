@@ -62,7 +62,7 @@ namespace src::control{
         }
 
         //float finalRotation = limitVal<float>((chassisRotationInput.getInterpolatedValue(currTime)) * Y_SENSITIVITY, -Y_SENSITIVITY, Y_SENSITIVITY);
-        float finalRotation = limitVal<float>((chassisYInput.getInterpolatedValue(currTime)), -1, 1);
+        float finalRotation = limitVal<float>((chassisRotationInput.getInterpolatedValue(currTime)), -1, 1);
 
         return finalRotation;
     }

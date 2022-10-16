@@ -15,7 +15,21 @@ namespace gimbal{
 class GimbalSubsystem : public tap::control::Subsystem
 {
 public:
-    GimbalSubsystem(tap::Drivers* drivers);
+    GimbalSubsystem(tap::Drivers* drivers)
+    : tap::control::Subsystem(drivers), 
+    yawMotor(drivers,
+               tap::motor::MOTOR1,
+               tap::can::CanBus::CAN_BUS2,
+               false,
+               "Yaw Motor"),
+      pitchMotor(drivers,
+                 tap::motor::MOTOR2,
+                 tap::can::CanBus::CAN_BUS1,
+                 false,
+                 "Pitch Motor"),
+      currentYaw(0.0f),
+      currentPitch(0.0f)
+      {}
 
     void initialize() override;
     void refresh() override;

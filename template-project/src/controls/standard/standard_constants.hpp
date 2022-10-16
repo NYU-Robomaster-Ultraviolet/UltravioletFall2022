@@ -17,6 +17,8 @@ static constexpr float USER_JOYSTICK_PITCH_SCALAR = 0.15f;
 static constexpr float CHASSIS_MOTOR_DISTANCE = 0.2f;
 static constexpr float CHASSIS_ROTATION_SET_SCALE = 0.1f;
 
+static constexpr float WHEELBASE_LENGTH = 0.366f;
+
 static constexpr float
 //M3505 motor speed PID 
 CHASSIS_MOTOR_KP = 20.0f,
