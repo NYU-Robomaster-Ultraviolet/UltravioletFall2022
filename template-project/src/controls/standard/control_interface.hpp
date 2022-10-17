@@ -10,7 +10,7 @@ namespace tap{
     class Drivers;
 }
 
-namespace Control {
+namespace src::control {
 
 class ControlInterface{
     private:
@@ -20,11 +20,14 @@ class ControlInterface{
         uint32_t prevUpdateCounterY = 0;
         uint32_t prevUpdateCounterRotation = 0;
 
+        uint32_t X_SENSITIVITY = 3.96f; //Max Input of 660 multiplied by sensitivity of .006
+        uint32_t Y_SENSITIVITY = 3.3f; //Max Input of 660 multiplied by sensitivity of .005
+
         LinearInterpolationPredictor chassisXInput;
         LinearInterpolationPredictor chassisYInput;
         LinearInterpolationPredictor chassisRotationInput;
     public:
-        ControlInterface(tap::Drivers *driveers) : drivers(drivers) {}
+        ControlInterface(tap::Drivers *drivers) : drivers(drivers) {}
         mockable float getChassisXInput();
         mockable float getChassisYInput();
         mockable float getChassisRotationInput();

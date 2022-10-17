@@ -11,25 +11,18 @@ using namespace tap::communication::serial;
  *
  * @return float The current X input from the operator.
  */
-namespace Control{
+namespace src::control{
     float ControlInterface::getChassisXInput() {
     uint32_t updateCounter = drivers->remote.getUpdateCounter();
     uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
 
     if (prevUpdateCounterX != updateCounter) {
-        chassisXInput.update(drivers->remote.getChannel(Remote::Channel::LEFT_HORIZONTAL), currTime);
+        chassisXInput.update(drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL), currTime);
         prevUpdateCounterX = updateCounter;
     }
 
-    float analogX = limitVal<float>(chassisXInput.getInterpolatedValue(currTime), -1.0f, 1.0f);
-
-    float finalX = analogX;  // TODO: Add digital values from keyboard as well
-
-    // Scales analog values by values defined in standard_constants.hpp to speedshift input
-    //finalX *= drivers->remote.keyPressed(Remote::Key::CTRL) ? CTRL_SCALAR : 1.0f;
-    //finalX *= drivers->remote.keyPressed(Remote::Key::SHIFT) ? SHIFT_SCALAR : 1.0f;
-
-    //finalXWatch = (int8_t)(finalX * 127.0f);
+    //float finalX = limitVal<float>((chassisXInput.getInterpolatedValue(currTime)) * X_SENSITIVITY, -X_SENSITIVITY, X_SENSITIVITY);
+    float finalX = limitVal<float>((chassisXInput.getInterpolatedValue(currTime)), -1, 1);
 
     return finalX;
     }
@@ -44,17 +37,12 @@ namespace Control{
         uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
 
         if (prevUpdateCounterY != updateCounter) {
-            chassisYInput.update(drivers->remote.getChannel(Remote::Channel::LEFT_VERTICAL), currTime);
+            chassisYInput.update(drivers->remote.getChannel(Remote::Channel::RIGHT_VERTICAL), currTime);
             prevUpdateCounterY = updateCounter;
         }
 
-        float analogY = limitVal<float>(chassisYInput.getInterpolatedValue(currTime), -1.0f, 1.0f);
-
-        float finalY = analogY;  // TODO: Add digital values from keyboard as well
-
-        // Scales analog values by values defined in standard_constants.hpp to speedshift input
-        //finalY *= drivers->remote.keyPressed(Remote::Key::CTRL) ? CTRL_SCALAR : 1.0f;
-        //finalY *= drivers->remote.keyPressed(Remote::Key::SHIFT) ? SHIFT_SCALAR : 1.0f;
+        //float finalY = limitVal<float>((chassisYInput.getInterpolatedValue(currTime))*Y_SENSITIVITY, -Y_SENSITIVITY, Y_SENSITIVITY);
+        float finalY = limitVal<float>((chassisYInput.getInterpolatedValue(currTime)), -1, 1);
 
         return finalY;
     }
@@ -69,26 +57,21 @@ namespace Control{
         uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
 
         if (prevUpdateCounterRotation != updateCounter) {
-            chassisRotationInput.update(drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL), currTime);
+            chassisRotationInput.update(drivers->remote.getChannel(Remote::Channel::LEFT_HORIZONTAL), currTime);
             prevUpdateCounterRotation = updateCounter;
         }
 
-        float analogRotation = limitVal<float>(chassisRotationInput.getInterpolatedValue(currTime), -1.0f, 1.0f);
-
-        float finalRotation = analogRotation;  // TODO: Add digital values from keyboard as well
-
-        // Scales analog values by values defined in standard_constants.hpp to speedshift input
-        //finalRotation *= drivers->remote.keyPressed(Remote::Key::CTRL) ? CTRL_SCALAR : 1.0f;
-        //finalRotation *= drivers->remote.keyPressed(Remote::Key::SHIFT) ? SHIFT_SCALAR : 1.0f;
+        //float finalRotation = limitVal<float>((chassisRotationInput.getInterpolatedValue(currTime)) * Y_SENSITIVITY, -Y_SENSITIVITY, Y_SENSITIVITY);
+        float finalRotation = limitVal<float>((chassisRotationInput.getInterpolatedValue(currTime)), -1, 1);
 
         return finalRotation;
     }
 
     float ControlInterface::getGimbalYawInput() {
-        return drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL);
+        return drivers->remote.getChannel(Remote::Channel::LEFT_HORIZONTAL);
     }
 
     float ControlInterface::getGimbalPitchInput() {
-        return drivers->remote.getChannel(Remote::Channel::RIGHT_VERTICAL);
+        return drivers->remote.getChannel(Remote::Channel::LEFT_VERTICAL);
     }
 }

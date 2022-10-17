@@ -20,15 +20,15 @@ using namespace tap::control;
 using namespace tap::communication::serial;
 using namespace chassis;
 
-namespace StandardControl{
+namespace src::control{
 // Define subsystems here ------------------------------------------------
 ChassisSubsystem chassis(drivers());
 // Robot Specific Controllers ------------------------------------------------
 
 // Define commands here ---------------------------------------------------
-ChassisMovementCommand chassisMovementCommand(&chassis, drivers());
+ChassisMovementCommand chassisMovement(&chassis, drivers());
 // Define command mappings here -------------------------------------------
-
+HoldCommandMapping rightSwitchMid(drivers(), {&chassisMovement}, RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers){
     drivers->commandScheduler.registerSubsystem(&chassis);
@@ -39,7 +39,7 @@ void initializeSubsystems() {
 }
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers* drivers) {
-    
+   // chassis.setDefaultCommand(&chassisMovement);
 }
 // Set Commands scheduled on startup
 void startupCommands(src::Drivers* drivers) {
@@ -47,21 +47,21 @@ void startupCommands(src::Drivers* drivers) {
 }
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers* drivers) {
-    
+    drivers->commandMapper.addMap(&rightSwitchMid);
 }
-}//namespace standardControl
+}//namespace src::control
 
 
 // Initialize subsystems ---------------------------------------------------
-namespace src::Control
+namespace src::control
 {
     void initializeSubsystemCommands(src::Drivers* drivers)
     {
-        StandardControl::initializeSubsystems();
-        StandardControl::registerSubsystems(drivers);
-        StandardControl::setDefaultCommands(drivers);
-        StandardControl::startupCommands(drivers);
-        StandardControl::registerIOMappings(drivers);
+        initializeSubsystems();
+        registerSubsystems(drivers);
+        setDefaultCommands(drivers);
+        startupCommands(drivers);
+        registerIOMappings(drivers);
     }
 } //namespace src::Control
 

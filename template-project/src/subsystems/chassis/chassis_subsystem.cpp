@@ -7,6 +7,7 @@ using namespace tap;
 
 namespace chassis
 {
+
 void ChassisSubsystem::initialize()
 {
     frontLeftMotor.initialize();
@@ -31,18 +32,23 @@ void ChassisSubsystem::updateRpmPid(modm::Pid<float>* pid, tap::motor::DjiMotor*
 void ChassisSubsystem::setDesiredOutput(float x, float y, float r) 
 {
     // x, y, and r contained between -1 and 1
+    //float centerDistance  = (powf(WHEELBASE_LENGTH / 2.0f, 2.0f)) + (powf(WHEELBASE_LENGTH / 2.0f, 2.0f));
+    //float rotationRatio = modm::toRadian(centerDistance);
+    //float rotationTranslated = modm::toDegree(r) / centerDistance;
+    /*
+    frontLeftDesiredRpm = tap::algorithms::limitVal<float>((x-y) * RPM_SCALE_FACTOR, -MAX_CURRENT_OUTPUT, MAX_CURRENT_OUTPUT);
+    frontRightDesiredRpm = tap::algorithms::limitVal<float>((x+y) * RPM_SCALE_FACTOR, -MAX_CURRENT_OUTPUT, MAX_CURRENT_OUTPUT);
+    backLeftDesiredRpm = tap::algorithms::limitVal<float>((x+y) * RPM_SCALE_FACTOR, -MAX_CURRENT_OUTPUT, MAX_CURRENT_OUTPUT);
+    backRightDesiredRpm = tap::algorithms::limitVal<float>((x-y)* RPM_SCALE_FACTOR, -MAX_CURRENT_OUTPUT, MAX_CURRENT_OUTPUT);
+    */
     
-    float norm = sqrt(x*x+y*y);
-    if (norm > 1) {
-        x = x / norm;
-        y = y / norm;
-    }
-
-    frontLeftDesiredRpm = (x-y)*RPM_SCALE_FACTOR;
-    frontRightDesiredRpm = (x+y)*RPM_SCALE_FACTOR;
-    backLeftDesiredRpm = (x+y)*RPM_SCALE_FACTOR;
-    backRightDesiredRpm = (x-y)*RPM_SCALE_FACTOR;
-
+    frontLeftDesiredRpm = tap::algorithms::limitVal<float>(
+        (RPM_SCALE_FACTOR * (-x+y+r)), -MAX_CURRENT_OUTPUT, MAX_CURRENT_OUTPUT);
+    frontRightDesiredRpm = tap::algorithms::limitVal<float>(
+        (RPM_SCALE_FACTOR* (x+y-r)), -MAX_CURRENT_OUTPUT, MAX_CURRENT_OUTPUT);
+    backLeftDesiredRpm = tap::algorithms::limitVal<float>(
+        (RPM_SCALE_FACTOR* (x+y+r)), -MAX_CURRENT_OUTPUT, MAX_CURRENT_OUTPUT);
+    backRightDesiredRpm = tap::algorithms::limitVal<float>(
+        (RPM_SCALE_FACTOR* (-x+y-r)), -MAX_CURRENT_OUTPUT, MAX_CURRENT_OUTPUT);
 }
-
 } //namespace chassis

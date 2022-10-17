@@ -20,7 +20,7 @@ ChassisMovementCommand::ChassisMovementCommand(
     this->addSubsystemRequirement(dynamic_cast<tap::control::Subsystem *>(chassis));
 }
 
-void  ChassisMovementCommand::initialize() {}
+void  ChassisMovementCommand::initialize() {chassis->setDesiredOutput(0, 0, 0);}
 
 void  ChassisMovementCommand::execute()
 {

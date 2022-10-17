@@ -42,6 +42,7 @@
 
 /* control includes ---------------------------------------------------------*/
 #include "tap/architecture/clock.hpp"
+#include "controls/robot_control.hpp"
 
 /* define timers here -------------------------------------------------------*/
 tap::arch::PeriodicMilliTimer sendMotorTimeout(2);
@@ -73,7 +74,7 @@ int main()
     Board::initialize();
     //Timer for bmi088 periodicIMUUpdate (only in TYPE-C board)
     tap::arch::PeriodicMilliTimer mainLoopTimeout(1000.0f / SAMPLE_FREQUENCY);
-
+    src::control::initializeSubsystemCommands(drivers);
     initializeIo(drivers);
 
 #ifdef PLATFORM_HOSTED
@@ -93,7 +94,7 @@ int main()
         if (sendMotorTimeout.execute()) {
             PROFILE(drivers->profiler, drivers->commandScheduler.run, ());
             PROFILE(drivers->profiler, drivers->djiMotorTxHandler.encodeAndSendCanData, ());
-            // PROFILE(drivers->profiler, drivers->terminalSerial.update, ());
+            PROFILE(drivers->profiler, drivers->terminalSerial.update, ());
         }
         modm::delay_us(10);
     }
@@ -120,7 +121,6 @@ static void initializeIo(src::Drivers *drivers)
 }
 
 float yaw, pitch, roll;
-float magX, magY, magZ;
 tap::communication::sensors::imu::ImuInterface::ImuState imuStatus;
 
 static void updateIo(src::Drivers *drivers)
@@ -134,7 +134,7 @@ static void updateIo(src::Drivers *drivers)
     drivers->remote.read();
     
     yaw = drivers->bmi088.getYaw();
-    pitch = drivers->bmi088.getRoll();
-    roll = drivers->bmi088.getPitch();
+    pitch = drivers->bmi088.getPitch();
+    roll = drivers->bmi088.getRoll();
     imuStatus = drivers->bmi088.getImuState();
 }

@@ -37,7 +37,7 @@ public:
         control_interface(this) {}
 
 public:
-    Control::ControlInterface control_interface;
+    src::control::ControlInterface control_interface;
 };  // class Drivers
 
 }  // namespace src

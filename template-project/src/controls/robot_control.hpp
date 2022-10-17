@@ -3,7 +3,7 @@
 
 #include "drivers.hpp"
 
-namespace src::Control {
+namespace src::control {
 void initializeSubsystemCommands(src::Drivers* drivers);
 }
 

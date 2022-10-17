@@ -37,10 +37,10 @@ public:
           frontRightMotor(drivers, FRONT_RIGHT_MOTOR_ID, CAN_BUS_MOTORS, true, "front right motor"),
           backLeftMotor(drivers, BACK_LEFT_MOTOR_ID, CAN_BUS_MOTORS, false, "back left motor"),
           backRightMotor(drivers, BACK_RIGHT_MOTOR_ID, CAN_BUS_MOTORS, true, "back right motor"),
-          frontLeftPid(chassis_pid.MOTOR_KP,chassis_pid.MOTOR_KI,chassis_pid.MOTOR_KD,chassis_pid.MOTOR_MAX_IOUT,chassis_pid.MOTOR_MAX_OUT),
-          frontRightPid(chassis_pid.MOTOR_KP,chassis_pid.MOTOR_KI,chassis_pid.MOTOR_KD,chassis_pid.MOTOR_MAX_IOUT,chassis_pid.MOTOR_MAX_OUT),
-          backLeftPid(chassis_pid.MOTOR_KP,chassis_pid.MOTOR_KI,chassis_pid.MOTOR_KD,chassis_pid.MOTOR_MAX_IOUT,chassis_pid.MOTOR_MAX_OUT),
-          backRightPid(chassis_pid.MOTOR_KP,chassis_pid.MOTOR_KI,chassis_pid.MOTOR_KD,chassis_pid.MOTOR_MAX_IOUT,chassis_pid.MOTOR_MAX_OUT),
+          frontLeftPid(CHASSIS_MOTOR_KP,CHASSIS_MOTOR_KI,CHASSIS_MOTOR_KD,CHASSIS_MOTOR_MAX_IOUT,CHASSIS_MOTOR_MAX_OUT),
+          frontRightPid(CHASSIS_MOTOR_KP,CHASSIS_MOTOR_KI,CHASSIS_MOTOR_KD,CHASSIS_MOTOR_MAX_IOUT,CHASSIS_MOTOR_MAX_OUT),
+          backLeftPid(CHASSIS_MOTOR_KP,CHASSIS_MOTOR_KI,CHASSIS_MOTOR_KD,CHASSIS_MOTOR_MAX_IOUT,CHASSIS_MOTOR_MAX_OUT),
+          backRightPid(CHASSIS_MOTOR_KP,CHASSIS_MOTOR_KI,CHASSIS_MOTOR_KD,CHASSIS_MOTOR_MAX_IOUT,CHASSIS_MOTOR_MAX_OUT),
           frontLeftDesiredRpm(0),
           frontRightDesiredRpm(0),
           backLeftDesiredRpm(0),
@@ -73,10 +73,10 @@ public:
 
 private:
     ///< Hardware constants, not specific to any particular chassis.
-    static constexpr tap::motor::MotorId FRONT_LEFT_MOTOR_ID = tap::motor::MOTOR1;
-    static constexpr tap::motor::MotorId FRONT_RIGHT_MOTOR_ID = tap::motor::MOTOR2;
-    static constexpr tap::motor::MotorId BACK_RIGHT_MOTOR_ID = tap::motor::MOTOR3;
-    static constexpr tap::motor::MotorId BACK_LEFT_MOTOR_ID = tap::motor::MOTOR4;
+    static constexpr tap::motor::MotorId FRONT_LEFT_MOTOR_ID = tap::motor::MOTOR3;
+    static constexpr tap::motor::MotorId FRONT_RIGHT_MOTOR_ID = tap::motor::MOTOR4;
+    static constexpr tap::motor::MotorId BACK_RIGHT_MOTOR_ID = tap::motor::MOTOR1;
+    static constexpr tap::motor::MotorId BACK_LEFT_MOTOR_ID = tap::motor::MOTOR2;
     static constexpr tap::can::CanBus CAN_BUS_MOTORS = tap::can::CanBus::CAN_BUS1;
 
     ///< Motors.  Use these to interact with any dji style motors.
