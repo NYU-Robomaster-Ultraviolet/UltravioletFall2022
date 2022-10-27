@@ -68,10 +68,10 @@ namespace src::control{
     }
 
     float ControlInterface::getGimbalYawInput() {
-        return drivers->remote.getChannel(Remote::Channel::LEFT_HORIZONTAL);
+        return limitVal<float>(-drivers->remote.getChannel(Remote::Channel::LEFT_HORIZONTAL), -1, 1);
     }
 
     float ControlInterface::getGimbalPitchInput() {
-        return drivers->remote.getChannel(Remote::Channel::LEFT_VERTICAL);
+        return limitVal<float>(drivers->remote.getChannel(Remote::Channel::LEFT_VERTICAL), -1, 1);
     }
 }

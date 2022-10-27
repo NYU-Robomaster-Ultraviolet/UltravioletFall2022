@@ -6,6 +6,7 @@
 #include "tap/motor/dji_motor.hpp"
 #include "tap/util_macros.hpp"
 #include "controls/standard/standard_constants.hpp"
+#include "drivers.hpp"
 
 
 namespace chassis
@@ -65,6 +66,9 @@ public:
     void setDesiredOutput(float x, float y, float r);
 
     void updateRpmPid(modm::Pid<float>* pid, tap::motor::DjiMotor* const motor, float desiredRpm);
+
+    bool motorOnline() {return frontLeftMotor.isMotorOnline() && frontRightMotor.isMotorOnline() && 
+    backLeftMotor.isMotorOnline() && backRightMotor.isMotorOnline();}
 
     const tap::motor::DjiMotor &getFrontLeftMotor() const { return frontLeftMotor; }
     const tap::motor::DjiMotor &getFrontRightMotor() const { return frontRightMotor; }
