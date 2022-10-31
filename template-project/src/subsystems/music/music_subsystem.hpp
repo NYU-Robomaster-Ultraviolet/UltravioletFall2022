@@ -1,4 +1,3 @@
-
 #ifndef MUSIC_SUBSYSTEM_HPP_
 #define MUSIC_SUBSYSTEM_HPP_
 
@@ -8,6 +7,7 @@
 
 using namespace tap::buzzer;
 
+namespace music{
 //The music subsystem class will play a series of sounds of different 
 // frequencies based on the defined robot
 class MusicSubsystem : tap::control::Subsystem{
@@ -26,5 +26,6 @@ class MusicSubsystem : tap::control::Subsystem{
 
     private:
 };
+}//namespace music
 
 #endif

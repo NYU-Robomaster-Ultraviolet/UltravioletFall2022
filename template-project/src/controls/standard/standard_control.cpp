@@ -11,9 +11,11 @@
 
 #include "subsystems/chassis/chassis_subsystem.hpp"
 #include "subsystems/gimbal/gimbal_subsystem.hpp"
+#include "subsystems/music/music_subsystem.hpp"
 
 #include "subsystems/chassis/chassis_movement_command.hpp"
 #include "subsystems/gimbal/gimbal_movement_command.hpp"
+#include "subsystems/music/music_command.hpp"
 
 
 src::driversFunc drivers = src::DoNotUse_getDrivers;
@@ -23,6 +25,7 @@ using namespace tap::control;
 using namespace tap::communication::serial;
 using namespace chassis;
 using namespace gimbal;
+using namespace music;
 
 namespace src::control{
 // Define subsystems here ------------------------------------------------

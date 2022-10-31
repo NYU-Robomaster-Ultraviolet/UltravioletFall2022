@@ -1,4 +1,3 @@
-
 #ifndef MUSIC_COMMAND_HPP_
 #define MUSIC_COMMAND_HPP_
 
@@ -7,12 +6,12 @@
 #include "drivers.hpp"
 #include "vector"
 #include "tap/communication/sensors/buzzer/buzzer.hpp"
-#include "notes.hpp"
 #include "songs.hpp"
 
 using namespace tap;
 using namespace tap::buzzer;
 
+namespace music{
 
 class MusicCommand : tap::control::Command{
     public:
@@ -35,5 +34,6 @@ class MusicCommand : tap::control::Command{
         unsigned tempo;
         bool finished = false;
 };
+} //namespace music
 
 #endif
