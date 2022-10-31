@@ -24,7 +24,6 @@ void  GimbalMovementCommand::execute()
         drivers->control_interface.getGimbalPitchInput());
     //if(gimbal->motorOnline()) drivers->leds.set(drivers->leds.Blue, true);
     //else drivers->leds.set(drivers->leds.Red, true);
-
 }
 
 void  GimbalMovementCommand::end(bool) { gimbal->controllerInput(0, 0);}

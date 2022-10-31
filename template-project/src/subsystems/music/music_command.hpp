@@ -1,4 +1,4 @@
-/*
+
 #ifndef MUSIC_COMMAND_HPP_
 #define MUSIC_COMMAND_HPP_
 
@@ -6,12 +6,17 @@
 #include "music_subsystem.hpp"
 #include "drivers.hpp"
 #include "vector"
+#include "tap/communication/sensors/buzzer/buzzer.hpp"
+#include "notes.hpp"
+#include "songs.hpp"
 
-#endif
+using namespace tap;
+using namespace tap::buzzer;
+
 
 class MusicCommand : tap::control::Command{
     public:
-        MusicCommand(MusicSubsystem *const music, src::Drivers *drivers, std::vector<uint32_t>* score);
+        MusicCommand(MusicSubsystem *music, src::Drivers *drivers);
 
         void initialize() override;
 
@@ -23,9 +28,12 @@ class MusicCommand : tap::control::Command{
 
         bool isFinished() const override;
     private:
-        MusicSubsystem* const music;
+        MusicSubsystem* music;
         src::Drivers* drivers;
-        std::vector<uint32_t>* score;
-        
+        std::vector<pair<float, float>> score;
+        size_t position;
+        unsigned tempo;
+        bool finished = false;
 };
-*/
+
+#endif

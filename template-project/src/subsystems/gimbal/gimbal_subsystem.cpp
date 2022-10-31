@@ -8,12 +8,14 @@ void GimbalSubsystem::initialize(){
     yawMotor.setDesiredOutput(0);
     pitchMotor.initialize();
     pitchMotor.setDesiredOutput(0);
+    uint16_t currentPitchEncoder = pitchMotor.getEncoderUnwrapped();
+    startingPitch = wrappedEncoderValueToRadians(currentPitchEncoder);
 }
 
 void GimbalSubsystem::refresh(){ 
     if(!inputsFound) { //if there are no inputs, 
         if(yawMotor.isMotorOnline()) yawMotor.setDesiredOutput(0);
-        if(pitchMotor.isMotorOnline()) pitchMotor.setDesiredOutput(0);
+        if(pitchMotor.isMotorOnline()) pitchMotor.setDesiredOutput(stabalizePitch());
         noInputs();
     }
     else{
@@ -43,36 +45,42 @@ inline float GimbalSubsystem::wrappedEncoderValueToRadians(int64_t encoderValue)
 void GimbalSubsystem::updateYawPid(){
     //drivers->leds.set(drivers->leds.Blue, true);
     yawError = targetYaw - currentYaw;
-    if(-5 < yawError && yawError < 5){
+    if(-(constants.YAW_MINIMUM_RADS) < yawError && yawError < constants.YAW_MINIMUM_RADS){
         yawMotor.setDesiredOutput(0.0f);
     }
     else{
-        yawPid.update(targetYaw - currentYaw);
-        yawSpeedPid.update((yawPid.getValue() * MOTOR_SPEED_FACTOR) - currentYawMotorSpeed);
-        yawSpeedOutput = limitVal<float>(yawSpeedPid.getValue(), -2000.0f, 2000.0f);
-        if(-500.0f < yawSpeedOutput && yawSpeedOutput < 500.0f) yawSpeedOutput = 0.0f;
-        yawMotor.setDesiredOutput(yawSpeedOutput);
+        yawPid.update(yawError);
+        yawSpeedPid.update((yawPid.getValue() * constants.MOTOR_SPEED_FACTOR) - currentYawMotorSpeed);
+        yawMotorOutput = limitVal<float>(yawSpeedPid.getValue(), constants.MIN_YAW_SPEED, constants.MAX_YAW_SPEED);
+        yawMotor.setDesiredOutput(yawMotorOutput);
         //drivers->leds.set(drivers->leds.Blue, false);
     }
 }
 void GimbalSubsystem::updatePitchPid(){
     //drivers->leds.set(drivers->leds.Blue, true);
     pitchError = targetPitch - currentPitch;
-    if(-5 < pitchError && pitchError < 5){
-        pitchPid.update(targetPitch - currentPitch);
+    pitchPid.update(pitchError);
+    if(-(constants.PITCH_MINIMUM_RADS) < pitchError && pitchError < constants.PITCH_MINIMUM_RADS){
+        pitchMotorOutput = stabalizePitch();
     }
     else{
-        pitchSpeedPid.update((pitchPid.getValue() * MOTOR_SPEED_FACTOR) - currentPitchMotorSpeed);
-        pitchSpeedOutput = limitVal<float>(pitchSpeedPid.getValue(), -2000.0f, 2000.0f);
-        if(-500.0f < pitchSpeedOutput && pitchSpeedOutput < 500.0f) pitchSpeedOutput = 0.0f;
-        pitchMotor.setDesiredOutput(pitchSpeedOutput);
-        //drivers->leds.set(drivers->leds.Blue, false);
+        pitchSpeedPid.update((pitchPid.getValue() * constants.MOTOR_SPEED_FACTOR) - currentPitchMotorSpeed);
+        pitchMotorOutput = limitVal<float>(pitchSpeedPid.getValue(), -(constants.MIN_PITCH_SPEED), constants.MAX_PITCH_SPEED);
     }
+    lastPitchMotorOutput = pitchMotorOutput;
+    pitchMotor.setDesiredOutput(pitchMotorOutput);
+        //drivers->leds.set(drivers->leds.Blue, false);
+}
+//this method will check if the motor is turning, and will return a new output to try to reach stable position
+float GimbalSubsystem::stabalizePitch(){
+    if(getPitchMotorRPM() > constants.MIN_PITCH_RPM) return lastPitchMotorOutput - constants.CURRENT_ADJUST;
+    else if(getPitchMotorRPM() < -constants.MIN_PITCH_RPM) return lastPitchMotorOutput + constants.CURRENT_ADJUST;
+    else return lastPitchMotorOutput; 
 }
 //this is the function that is called through the remote control input
 void GimbalSubsystem::controllerInput(float yawInput, float pitchInput){
-    setYawAngle(currentYaw + (yawInput * YAW_GIMBAL_SCALE));
-    setPitchAngle(currentPitch + (pitchInput * PITCH_GIMBAL_SCALE));
+    setYawAngle(currentYaw + (yawInput * constants.YAW_SCALE));
+    setPitchAngle(currentPitch + (pitchInput * constants.PITCH_SCALE));
     inputsFound = true;
 }
 //this is the function that is called when CV team is sending offset angles through UART

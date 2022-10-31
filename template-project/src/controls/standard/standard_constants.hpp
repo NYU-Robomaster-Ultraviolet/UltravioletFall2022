@@ -59,13 +59,29 @@ struct GIMBAL_PID {
     YAW_GYRO_ABSOLUTE_PID_MAX_OUT = 10.0f,  // Jerry 10.0f
     YAW_GYRO_ABSOLUTE_PID_MAX_IOUT = 0.0f;  //Jerry 0.0f
 }; //struct GIMBAL_PID
+struct GIMBAL_CONSTANTS{
 //Gimbal PID output to motor speed error factor
 static constexpr float MOTOR_SPEED_FACTOR = 100.0f;
 //the value in which controller inputs are multiplied by for gimbal movement, basically sensitivity
-static constexpr float YAW_GIMBAL_SCALE = 50.0f;
-static constexpr float PITCH_GIMBAL_SCALE = 50.0f;
+static constexpr float YAW_SCALE = 1.0f;
+static constexpr float PITCH_SCALE = 0.5f;
 //Gimbal Starting angles
-static constexpr float YAW_STARTING_ANGLE = 1.57079632679489661923f; //pi / 2
+static constexpr float YAW_STARTING_ANGLE = 0.0f;
 static constexpr float PITCH_STARTING_ANGLE = 1.57079632679489661923f; //pi / 2
-
+//Pitch Angle Limits
+static constexpr float PITCH_MIN_ANGLE = 0.0f; //starting position is initialized as 0
+static constexpr float PITCH_MAX_ANGLE = 2.61799f; //150 degrees
+//gimbal yaw and pitch speed limits
+static constexpr float MIN_YAW_SPEED = -2000.0f;
+static constexpr float MAX_YAW_SPEED = 2000.0f; 
+static constexpr float MIN_PITCH_SPEED = -8000.0f;
+static constexpr float MAX_PITCH_SPEED = 8000.0f;
+//Gimbal minimum angles of movement
+static constexpr float YAW_MINIMUM_RADS = .03f;
+static constexpr float PITCH_MINIMUM_RADS = .01f;
+//minimum value for pitch RPM to be considered stable
+static constexpr float MIN_PITCH_RPM = .0005f;
+//microadjustment values when attempt to reach stable position
+static constexpr float CURRENT_ADJUST = 0.1f;
+};//struct GIMBAL_CONSTANTS
 #endif

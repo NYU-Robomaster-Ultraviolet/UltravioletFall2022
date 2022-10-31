@@ -8,12 +8,12 @@
 #include "controls/standard/standard_constants.hpp"
 #include "drivers.hpp"
 
-
 namespace chassis
 {
 /**
  * A bare bones Subsystem for interacting with a 4 wheeled chassis.
  */
+
 class ChassisSubsystem : public tap::control::Subsystem
 {
 public:
@@ -48,6 +48,9 @@ public:
           backRightDesiredRpm(0)
     {
     }
+    void updateWheelvalues();
+
+    std::string getUartOutput(){return outputString;}
 
     ChassisSubsystem(const ChassisSubsystem &other) = delete;
 
@@ -69,6 +72,10 @@ public:
 
     bool motorOnline() {return frontLeftMotor.isMotorOnline() && frontRightMotor.isMotorOnline() && 
     backLeftMotor.isMotorOnline() && backRightMotor.isMotorOnline();}
+
+    inline float wrappedEncoderValueToRadians(int64_t encoderValue) {
+        return (M_TWOPI * static_cast<float>(encoderValue)) / tap::motor::DjiMotor::ENC_RESOLUTION;
+    }
 
     const tap::motor::DjiMotor &getFrontLeftMotor() const { return frontLeftMotor; }
     const tap::motor::DjiMotor &getFrontRightMotor() const { return frontRightMotor; }
@@ -104,6 +111,8 @@ private:
     // Scale factor for converting joystick movement into RPM setpoint
     static constexpr float RPM_SCALE_FACTOR = 4000.0f;
 
+    //
+    std::string outputString;
 };  // class ChassisSubsystem
 
 }  // namespace chassis

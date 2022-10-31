@@ -25,13 +25,14 @@ public:
                "Yaw Motor"),
       pitchMotor(drivers,
                  tap::motor::MOTOR6,
-                 tap::can::CanBus::CAN_BUS1,
+                 tap::can::CanBus::CAN_BUS2,
                  false,
                  "Pitch Motor"),
       targetYaw(0.0f),
       targetPitch(0.0f),
       currentYawMotorSpeed(0.0f),
       currentPitchMotorSpeed(0.0f),
+      lastPitchMotorOutput(0.0f),
       yawPid(gimbalPid.YAW_GYRO_ABSOLUTE_PID_KP, gimbalPid.YAW_GYRO_ABSOLUTE_PID_KI, gimbalPid.YAW_GYRO_ABSOLUTE_PID_KD, 
       gimbalPid.YAW_GYRO_ABSOLUTE_PID_MAX_IOUT, gimbalPid.YAW_GYRO_ABSOLUTE_PID_MAX_OUT),
       pitchPid(gimbalPid.PITCH_GYRO_ABSOLUTE_PID_KP, gimbalPid.PITCH_GYRO_ABSOLUTE_PID_KI, gimbalPid.PITCH_GYRO_ABSOLUTE_PID_KD, 
@@ -53,7 +54,7 @@ public:
     static inline float wrappedEncoderValueToRadians(int64_t encoderValue);
 
     void setYawAngle(float angle) { targetYaw = angle; }
-    void setPitchAngle(float angle) {targetPitch = limitVal<float>(angle, -180.0f, 180.0f);}
+    void setPitchAngle(float angle) {targetPitch = limitVal<float>(angle, constants.PITCH_MIN_ANGLE, constants.PITCH_MAX_ANGLE);}
 
     float getYawMotorRPM() const {return yawMotor.isMotorOnline() ? yawMotor.getShaftRPM() : 0.0f; }
     float getPitchMotorRPM() const {return pitchMotor.isMotorOnline() ? pitchMotor.getShaftRPM() : 0.0f; }
@@ -62,30 +63,35 @@ public:
     float getYaw() const {return drivers->bmi088.getPitch();}
     float getPitch() const {return drivers->bmi088.getRoll();}
 
+    //these methods will update both PID calculators and set motor speeds
     void updateYawPid();
-     void updatePitchPid();
+    void updatePitchPid();
 
+    /*these methods cover the three posibilities of gimbal position:
+    either controller inputs, CV inputs, or no inputs*/
     void controllerInput(float yawInput, float pitchInput);
     void cvInput(float yawInput, float pitchInput);
     void noInputs();
 
-    bool motorOnline(){ return yawMotor.isMotorOnline();
-    //&& yawMotor.isMotorOnline();
-    }
+    //this methods will take into consideration the current pitch of the gimbal and return a float value that will lock it in place
+    float stabalizePitch();
 
 private:
     tap::motor::DjiMotor yawMotor;
     tap::motor::DjiMotor pitchMotor;
 
-    //target angel, given in a value between -1 and 1
+    //starting angle
+    float startingPitch;
+    //target angle, given in a value between -1 and 1
     float targetYaw;
     float targetPitch;
     //motor speed given in revolutions / min
     float currentYawMotorSpeed;
     float currentPitchMotorSpeed;
+    float lastPitchMotorOutput;
 
     modm::Pid<float> yawPid;
-    modm::Pid<float> pitchPid;
+    modm::Pid<float> pitchPid; //angle
 
     modm::Pid<float> yawSpeedPid;
     modm::Pid<float> pitchSpeedPid;
@@ -98,12 +104,13 @@ private:
     float yawError;
     float pitchError;
 
-    //desired output speeds
-    float yawSpeedOutput;
-    float pitchSpeedOutput;
-
+    //desired output values for motors in current
+    float yawMotorOutput;
+    float pitchMotorOutput;
     //PID constancts
     GIMBAL_PID gimbalPid;
+    //all other gimbal constants
+    GIMBAL_CONSTANTS constants;
     //Gimbal PID output to motor speed error factor
     float motorSpeedFactor;
 
