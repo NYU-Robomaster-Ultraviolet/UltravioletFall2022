@@ -61,7 +61,7 @@ struct GIMBAL_PID {
 }; //struct GIMBAL_PID
 struct GIMBAL_CONSTANTS{
 //Gimbal PID output to motor speed error factor
-static constexpr float MOTOR_SPEED_FACTOR = 100.0f;
+static constexpr float MOTOR_SPEED_FACTOR = 8000.0f;
 //the value in which controller inputs are multiplied by for gimbal movement, basically sensitivity
 static constexpr float YAW_SCALE = 1.0f;
 static constexpr float PITCH_SCALE = 0.5f;

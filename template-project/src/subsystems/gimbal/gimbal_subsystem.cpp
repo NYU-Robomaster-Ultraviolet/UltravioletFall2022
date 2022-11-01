@@ -15,7 +15,7 @@ void GimbalSubsystem::initialize(){
 void GimbalSubsystem::refresh(){ 
     if(!inputsFound) { //if there are no inputs, 
         if(yawMotor.isMotorOnline()) yawMotor.setDesiredOutput(0);
-        if(pitchMotor.isMotorOnline()) pitchMotor.setDesiredOutput(stabalizePitch());
+        if(pitchMotor.isMotorOnline()) pitchMotor.setDesiredOutput(0);//stabalizePitch());
         noInputs();
     }
     else{
@@ -61,7 +61,7 @@ void GimbalSubsystem::updatePitchPid(){
     pitchError = targetPitch - currentPitch;
     pitchPid.update(pitchError);
     if(-(constants.PITCH_MINIMUM_RADS) < pitchError && pitchError < constants.PITCH_MINIMUM_RADS){
-        pitchMotorOutput = stabalizePitch();
+        pitchMotorOutput = 0;//stabalizePitch();
     }
     else{
         pitchSpeedPid.update((pitchPid.getValue() * constants.MOTOR_SPEED_FACTOR) - currentPitchMotorSpeed);
