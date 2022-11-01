@@ -24,16 +24,9 @@ static constexpr float
 CHASSIS_MOTOR_KP = 20.0f,
 CHASSIS_MOTOR_KI = 0.2f,
 CHASSIS_MOTOR_KD = 0.0f,
-CHASSIS_MOTOR_MAX_OUT = 16000.0f,
-CHASSIS_MOTOR_MAX_IOUT = 2000.0f; //max integral 
+CHASSIS_MOTOR_MAX_IOUT = 2000.0f, //max integral 
+CHASSIS_MOTOR_MAX_OUT = 16000.0f; //max output
  //CHASSIS PID VALUES
-static constexpr float
-SHOOTER_MOTOR_KP = 800.0f,
-SHOOTER_MOTOR_KI = 0.5f,
-SHOOTER_MOTOR_KD = 0.0f,
-SHOOTER_MOTOR_MAX_OUT = 10000.0f,
-SHOOTER_MOTOR_MAX_IOUT = 9000.0f;
-//SHOOTER PID VALUES
 
 struct GIMBAL_PID {
     //pitch speed close-loop PID params, max out and max iout
@@ -66,5 +59,13 @@ struct GIMBAL_PID {
     YAW_GYRO_ABSOLUTE_PID_MAX_OUT = 10.0f,  // Jerry 10.0f
     YAW_GYRO_ABSOLUTE_PID_MAX_IOUT = 0.0f;  //Jerry 0.0f
 }; //struct GIMBAL_PID
+//Gimbal PID output to motor speed error factor
+static constexpr float MOTOR_SPEED_FACTOR = 100.0f;
+//the value in which controller inputs are multiplied by for gimbal movement, basically sensitivity
+static constexpr float YAW_GIMBAL_SCALE = 50.0f;
+static constexpr float PITCH_GIMBAL_SCALE = 50.0f;
+//Gimbal Starting angles
+static constexpr float YAW_STARTING_ANGLE = 1.57079632679489661923f; //pi / 2
+static constexpr float PITCH_STARTING_ANGLE = 1.57079632679489661923f; //pi / 2
 
 #endif
