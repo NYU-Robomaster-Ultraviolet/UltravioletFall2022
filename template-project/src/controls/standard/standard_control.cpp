@@ -11,7 +11,9 @@
 
 #include "subsystems/chassis/chassis_subsystem.hpp"
 #include "subsystems/gimbal/gimbal_subsystem.hpp"
+#include "subsystems/shooter/shooter_subsystem.hpp"
 
+#include "subsystems/shooter/shoot_user_command.hpp"
 #include "subsystems/chassis/chassis_movement_command.hpp"
 #include "subsystems/gimbal/gimbal_movement_command.hpp"
 
@@ -23,31 +25,40 @@ using namespace tap::control;
 using namespace tap::communication::serial;
 using namespace chassis;
 using namespace gimbal;
+using namespace shooter;
 
 namespace src::control{
 // Define subsystems here ------------------------------------------------
 ChassisSubsystem chassis(drivers());
 GimbalSubsystem gimbal(drivers());
+
+ShooterSubsystem shooter(drivers());
 // Robot Specific Controllers ------------------------------------------------
 
 // Define commands here ---------------------------------------------------
 ChassisMovementCommand chassisMovement(&chassis, drivers());
 GimbalMovementCommand gimbalMovement(&gimbal, drivers());
+
+ShootUserCommand shootUser(&shooter, drivers());
 // Define command mappings here -------------------------------------------
 HoldCommandMapping rightSwitchMid(drivers(), {&chassisMovement, &gimbalMovement}, 
 RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 
 HoldCommandMapping rightSwitchUp(drivers(), {&gimbalMovement}, 
 RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
+HoldCommandMapping rightSwitchMid(drivers(), {&chassisMovement}, RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
+HoldCommandMapping leftSwitchUp(drivers(), {&shootUser}, RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers){
     drivers->commandScheduler.registerSubsystem(&chassis);
     drivers->commandScheduler.registerSubsystem(&gimbal);
+    drivers->commandScheduler.registerSubsystem(&shooter);
 }
 // Initialize subsystems here ---------------------------------------------
 void initializeSubsystems() {
     chassis.initialize();
-    gimbal.initialize();
+	gimbal.initialize();
+    shooter.initialize();
 }
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers* drivers) {
@@ -61,6 +72,8 @@ void startupCommands(src::Drivers* drivers) {
 void registerIOMappings(src::Drivers* drivers) {
     drivers->commandMapper.addMap(&rightSwitchMid);
     drivers->commandMapper.addMap(&rightSwitchUp);
+
+    drivers->commandMapper.addMap(&leftSwitchUp);
 }
 }//namespace src::control
 

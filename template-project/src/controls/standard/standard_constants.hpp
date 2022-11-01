@@ -24,9 +24,16 @@ static constexpr float
 CHASSIS_MOTOR_KP = 20.0f,
 CHASSIS_MOTOR_KI = 0.2f,
 CHASSIS_MOTOR_KD = 0.0f,
-CHASSIS_MOTOR_MAX_IOUT = 2000.0f, //max integral 
-CHASSIS_MOTOR_MAX_OUT = 16000.0f; //max output
+CHASSIS_MOTOR_MAX_OUT = 16000.0f,
+CHASSIS_MOTOR_MAX_IOUT = 2000.0f; //max integral 
  //CHASSIS PID VALUES
+static constexpr float
+SHOOTER_MOTOR_KP = 800.0f,
+SHOOTER_MOTOR_KI = 0.5f,
+SHOOTER_MOTOR_KD = 0.0f,
+SHOOTER_MOTOR_MAX_OUT = 10000.0f,
+SHOOTER_MOTOR_MAX_IOUT = 9000.0f;
+//SHOOTER PID VALUES
 
 struct GIMBAL_PID {
     //pitch speed close-loop PID params, max out and max iout
