@@ -14,7 +14,7 @@ void FeederSubsystem::initialize()
 }
 
 void FeederSubsystem::refresh() {
-    updateFeederPid(&feederPid, &feederMotor, targetRPM);
+    updateFeederPid(&rpmPid, &feederMotor, targetRPM);
 }
 
 void FeederSubsystem::updateFeederPid(modm::Pid<float>* pid, tap::motor::DjiMotor* const motor, float desiredRpm) {
@@ -23,7 +23,7 @@ void FeederSubsystem::updateFeederPid(modm::Pid<float>* pid, tap::motor::DjiMoto
 }   
 
 /*
-    Give desired setpoints for chassis movement. +x is forward, +y is right, +r is clockwise (turning right). Expressed in body frame.
+    The target RPM should be a constant.
 */
 void FeederSubsystem::setTargetRPM(float RPM) 
 {    

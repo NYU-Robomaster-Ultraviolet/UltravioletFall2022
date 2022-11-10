@@ -24,16 +24,9 @@ static constexpr float
 CHASSIS_MOTOR_KP = 20.0f,
 CHASSIS_MOTOR_KI = 0.2f,
 CHASSIS_MOTOR_KD = 0.0f,
-CHASSIS_MOTOR_MAX_OUT = 16000.0f,
-CHASSIS_MOTOR_MAX_IOUT = 2000.0f; //max integral 
+CHASSIS_MOTOR_MAX_IOUT = 2000.0f, //max integral 
+CHASSIS_MOTOR_MAX_OUT = 16000.0f; //max output
  //CHASSIS PID VALUES
-static constexpr float
-SHOOTER_MOTOR_KP = 800.0f,
-SHOOTER_MOTOR_KI = 0.5f,
-SHOOTER_MOTOR_KD = 0.0f,
-SHOOTER_MOTOR_MAX_OUT = 10000.0f,
-SHOOTER_MOTOR_MAX_IOUT = 9000.0f;
-//SHOOTER PID VALUES
 
 struct GIMBAL_PID {
     //pitch speed close-loop PID params, max out and max iout
@@ -75,6 +68,15 @@ static constexpr float PITCH_GIMBAL_SCALE = 50.0f;
 static constexpr float YAW_STARTING_ANGLE = 1.57079632679489661923f; //pi / 2
 static constexpr float PITCH_STARTING_ANGLE = 1.57079632679489661923f; //pi / 2
 
+struct FEEDER_PID
+{
+    static constexpr float
+    PID_KP = 800.0f,
+    PID_KI = 0.5f,
+    PID_KD = 0.0f,
+    PID_MAX_OUT = 10000.0f,
+    PID_MAX_IOUT = 9000.0f;
+};  // struct FEEDER_PID
 
 
 #endif
