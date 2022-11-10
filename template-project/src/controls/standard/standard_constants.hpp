@@ -68,4 +68,6 @@ static constexpr float PITCH_GIMBAL_SCALE = 50.0f;
 static constexpr float YAW_STARTING_ANGLE = 1.57079632679489661923f; //pi / 2
 static constexpr float PITCH_STARTING_ANGLE = 1.57079632679489661923f; //pi / 2
 
+
+
 #endif
