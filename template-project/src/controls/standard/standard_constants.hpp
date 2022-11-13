@@ -1,7 +1,11 @@
 #ifndef STANDARD_CONSTANTS_HPP_
 #define STANDARD_CONSTANTS_HPP_
+
+#include "tap/algorithms/smooth_pid.hpp"
+#include "modm/math/geometry/angle.hpp"
+
 /**
- * @brief Definitions for operator interface constants (may change based on preference of drivers)
+ * @brief constants used for configeration of classes when building standard robot
  *
  */
 
@@ -28,60 +32,63 @@ CHASSIS_MOTOR_MAX_IOUT = 2000.0f, //max integral
 CHASSIS_MOTOR_MAX_OUT = 16000.0f; //max output
  //CHASSIS PID VALUES
 
-struct GIMBAL_PID {
-    //pitch speed close-loop PID params, max out and max iout
-    static constexpr float 
-    PITCH_SPEED_PID_KP = 2000.0f, 
-    PITCH_SPEED_PID_KI = 60.0f, 
-    PITCH_SPEED_PID_KD = 0.0f,
-    PITCH_SPEED_PID_MAX_OUT = 15000.0f,
-    PITCH_SPEED_PID_MAX_IOUT = 5000.0f,
+static constexpr tap::algorithms::SmoothPidConfig YAW_PID = {
+    .kp = 229'183.1f,
+    .ki = 0.0f,
+    .kd = 10'886.2f,
+    .maxICumulative = 0.0f,
+    .maxOutput = 32'000.0f,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 30.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 0.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
 
-    //yaw speed close-loop PID params, max out and max iout
-    YAW_SPEED_PID_KP = 3600.0f,
-    YAW_SPEED_PID_KI = 20.0f,
-    YAW_SPEED_PID_KD = 0.0f,
-    YAW_SPEED_PID_MAX_OUT = 30000.0f, 
-    YAW_SPEED_PID_MAX_IOUT = 5000.0f, 
+static constexpr tap::algorithms::SmoothPidConfig PITCH_PID = {
+    .kp = 229'183.1f,
+    .ki = 0.0f,
+    .kd = 7'448.5f,
+    .maxICumulative = 0.0f,
+    .maxOutput = 32000.0f,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 10.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 2.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+ //struct GIMBAL_SMOOTH_PID
 
-    //pitch gyro angle close-loop PID params, max out and max iout
-    PITCH_GYRO_ABSOLUTE_PID_KP = 15.0f,	// JERRY: 15.0f
-    PITCH_GYRO_ABSOLUTE_PID_KI = 0.0f,		//JERRY: 0.0f
-    PITCH_GYRO_ABSOLUTE_PID_KD = 0.0f,		//JERRY: 0.0f
-
-    PITCH_GYRO_ABSOLUTE_PID_MAX_OUT = 10.0f,
-    PITCH_GYRO_ABSOLUTE_PID_MAX_IOUT = 0.0f,
-
-    //yaw gyro angle close-loop PID params, max out and max iout
-    YAW_GYRO_ABSOLUTE_PID_KP = 15.0f,	// JERRY'code, chewy's pan 26.0f
-    YAW_GYRO_ABSOLUTE_PID_KI = 0.0f,	// JERRY'code, chewy's pan 0.0f
-    YAW_GYRO_ABSOLUTE_PID_KD = 0.0f,// JERRY'code, chewy's pan 0.3f
-    YAW_GYRO_ABSOLUTE_PID_MAX_OUT = 10.0f,  // Jerry 10.0f
-    YAW_GYRO_ABSOLUTE_PID_MAX_IOUT = 0.0f;  //Jerry 0.0f
-}; //struct GIMBAL_PID
 struct GIMBAL_CONSTANTS{
 //Gimbal PID output to motor speed error factor
 static constexpr float MOTOR_SPEED_FACTOR = 8000.0f;
 //the value in which controller inputs are multiplied by for gimbal movement, basically sensitivity
-static constexpr float YAW_SCALE = 1.0f;
-static constexpr float PITCH_SCALE = 0.5f;
+static constexpr float YAW_SCALE = 0.02f;
+static constexpr float PITCH_SCALE = 0.02f;
 //Gimbal Starting angles
 static constexpr float YAW_STARTING_ANGLE = 0.0f;
 static constexpr float PITCH_STARTING_ANGLE = 1.57079632679489661923f; //pi / 2
 //Pitch Angle Limits
 static constexpr float PITCH_MIN_ANGLE = 0.0f; //starting position is initialized as 0
-static constexpr float PITCH_MAX_ANGLE = 2.61799f; //150 degrees
+static constexpr float PITCH_MAX_ANGLE = 0.785398f; //45 degrees
 //gimbal yaw and pitch speed limits
-static constexpr float MIN_YAW_SPEED = -2000.0f;
-static constexpr float MAX_YAW_SPEED = 2000.0f; 
+static constexpr float MIN_YAW_SPEED = -8000.0f;
+static constexpr float MAX_YAW_SPEED = 8000.0f; 
 static constexpr float MIN_PITCH_SPEED = -8000.0f;
 static constexpr float MAX_PITCH_SPEED = 8000.0f;
 //Gimbal minimum angles of movement
-static constexpr float YAW_MINIMUM_RADS = .03f;
-static constexpr float PITCH_MINIMUM_RADS = .01f;
+static constexpr float YAW_MINIMUM_RADS = .005f;
+static constexpr float PITCH_MINIMUM_RADS = .005f;
 //minimum value for pitch RPM to be considered stable
 static constexpr float MIN_PITCH_RPM = .0005f;
-//microadjustment values when attempt to reach stable position
-static constexpr float CURRENT_ADJUST = 0.1f;
+//starting pitch angle from when the robot is turned on 
+static constexpr float  STARTING_PITCH = -M_1_PI / 2;
+
+//values for gravity compensation
+static constexpr float TURRET_CG_X = 30.17;
+static constexpr float TURRET_CG_Z = 34.02;
+static constexpr float GRAVITY_COMPENSATION_SCALAR = 7000;
 };//struct GIMBAL_CONSTANTS
 #endif

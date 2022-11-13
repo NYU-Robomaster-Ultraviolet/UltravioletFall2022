@@ -10,7 +10,7 @@ using namespace tap::buzzer;
 namespace music{
 //The music subsystem class will play a series of sounds of different 
 // frequencies based on the defined robot
-class MusicSubsystem : tap::control::Subsystem{
+class MusicSubsystem : public tap::control::Subsystem{
     public:
         MusicSubsystem(tap::Drivers *drivers);
 

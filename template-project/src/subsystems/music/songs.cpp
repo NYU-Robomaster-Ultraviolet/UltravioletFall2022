@@ -21,7 +21,9 @@ Note: If you want a rest, put the note value as 0.0f
 Note: a value of -1.0f should be inputed if you wish to dictate the end of the song
 */
 vector<pair<float, float>> yourSong{
-pair<float, float>(O3.C, 1.0f), //arbitrary value, replace with what you would like
+pair<float, float>(O3.C, 30.0f), //arbitrary value, replace with what you would like
+pair<float, float>(O3.F, 30.0f),
+pair<float, float>(0.0f, 0.0f), //silences buzzer
 pair<float, float>(-1.0f, 0.0f) //This is the end of the song
 };
 

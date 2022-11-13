@@ -13,7 +13,7 @@ using namespace tap::buzzer;
 
 namespace music{
 
-class MusicCommand : tap::control::Command{
+class MusicCommand : public tap::control::Command{
     public:
         MusicCommand(MusicSubsystem *music, src::Drivers *drivers);
 

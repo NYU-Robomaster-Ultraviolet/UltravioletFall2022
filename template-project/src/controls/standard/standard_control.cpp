@@ -31,11 +31,13 @@ namespace src::control{
 // Define subsystems here ------------------------------------------------
 ChassisSubsystem chassis(drivers());
 GimbalSubsystem gimbal(drivers());
+MusicSubsystem music(drivers());
 // Robot Specific Controllers ------------------------------------------------
 
 // Define commands here ---------------------------------------------------
 ChassisMovementCommand chassisMovement(&chassis, drivers());
 GimbalMovementCommand gimbalMovement(&gimbal, drivers());
+MusicCommand musicPlayer(&music, drivers());
 // Define command mappings here -------------------------------------------
 HoldCommandMapping rightSwitchMid(drivers(), {&chassisMovement, &gimbalMovement}, 
 RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
@@ -46,15 +48,18 @@ RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
 void registerSubsystems(src::Drivers *drivers){
     drivers->commandScheduler.registerSubsystem(&chassis);
     drivers->commandScheduler.registerSubsystem(&gimbal);
+    drivers->commandScheduler.registerSubsystem(&music);
 }
 // Initialize subsystems here ---------------------------------------------
 void initializeSubsystems() {
     chassis.initialize();
     gimbal.initialize();
+    music.initialize();
 }
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers* drivers) {
-   // chassis.setDefaultCommand(&chassisMovement);
+    //chassis.setDefaultCommand(&chassisMovement);
+    music.setDefaultCommand(&musicPlayer);
 }
 // Set Commands scheduled on startup
 void startupCommands(src::Drivers* drivers) {
