@@ -11,6 +11,7 @@
 #include "drivers.hpp"
 #include "tap/algorithms/smooth_pid.hpp"
 #include "tap/architecture/clock.hpp"
+#include "controls/standard/imu_interface.hpp"
 
 using namespace tap::algorithms;
 
@@ -18,7 +19,7 @@ namespace gimbal{
 class GimbalSubsystem : public tap::control::Subsystem
 {
 public:
-    GimbalSubsystem(tap::Drivers *drivers)
+    GimbalSubsystem(src::Drivers *drivers)
     : tap::control::Subsystem(drivers), 
     yawMotor(drivers,
                tap::motor::MOTOR5,
@@ -48,16 +49,13 @@ public:
 
     static inline float wrappedEncoderValueToRadians(int64_t encoderValue);
 
-    void setYawAngle(float angle) { targetYaw = angle; }
-    void setPitchAngle(float angle) {targetPitch = limitVal<float>(angle, constants.PITCH_MIN_ANGLE, 
+    void setYawAngle(float angle) { targetYaw = angle;}
+
+    void setPitchAngle(float angle) {targetPitch = limitVal<float>(angle , constants.PITCH_MIN_ANGLE, 
         constants.PITCH_MAX_ANGLE - constants.STARTING_PITCH);}
 
     float getYawMotorRPM() const {return yawMotor.isMotorOnline() ? yawMotor.getShaftRPM() : 0.0f; }
     float getPitchMotorRPM() const {return pitchMotor.isMotorOnline() ? pitchMotor.getShaftRPM() : 0.0f; }
-
-    //value in degrees, Yaw = Pitch and Pitch = Roll cause taproot
-    float getYaw() const {return drivers->bmi088.getPitch();}
-    float getPitch() const {return drivers->bmi088.getRoll();}
 
     //getters for motor speeds in rad/s, rpm * (pi / 120)
     float getYawVelocity() const {return (M_PI / 120) * yawMotor.getShaftRPM();}
@@ -75,6 +73,9 @@ public:
     either controller inputs, CV inputs, or no inputs*/
     void controllerInput(float yawInput, float pitchInput);
     void cvInput(float yawInput, float pitchInput);
+
+    //checks if there are no inputs
+    void noInputs();
 
     //this methods will take into consideration the current pitch of the gimbal and return a float value that will lock it in place
     float gravityCompensation();

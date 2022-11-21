@@ -33,62 +33,64 @@ CHASSIS_MOTOR_MAX_OUT = 16000.0f; //max output
  //CHASSIS PID VALUES
 
 static constexpr tap::algorithms::SmoothPidConfig YAW_PID = {
-    .kp = 229'183.1f,
+    .kp = 600.0f,
     .ki = 0.0f,
-    .kd = 10'886.2f,
-    .maxICumulative = 0.0f,
-    .maxOutput = 32'000.0f,
+    .kd = 500.0f,
+    .maxICumulative = 10.0f,
+    .maxOutput = 16000.0f,
     .tQDerivativeKalman = 1.0f,
-    .tRDerivativeKalman = 30.0f,
+    .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,
-    .tRProportionalKalman = 0.0f,
+    .tRProportionalKalman = 1.0f,
     .errDeadzone = 0.0f,
     .errorDerivativeFloor = 0.0f,
 };
 
 static constexpr tap::algorithms::SmoothPidConfig PITCH_PID = {
-    .kp = 229'183.1f,
+    .kp = 1850.0f,
     .ki = 0.0f,
-    .kd = 7'448.5f,
-    .maxICumulative = 0.0f,
-    .maxOutput = 32000.0f,
+    .kd = 150.0f,
+    .maxICumulative = 10.0f,
+    .maxOutput = 16000.0f,
     .tQDerivativeKalman = 1.0f,
-    .tRDerivativeKalman = 10.0f,
+    .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,
-    .tRProportionalKalman = 2.0f,
-    .errDeadzone = 0.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.5f,
     .errorDerivativeFloor = 0.0f,
 };
  //struct GIMBAL_SMOOTH_PID
 
 struct GIMBAL_CONSTANTS{
 //Gimbal PID output to motor speed error factor
-static constexpr float MOTOR_SPEED_FACTOR = 8000.0f;
+static constexpr float MOTOR_SPEED_FACTOR = 200.0f;
 //the value in which controller inputs are multiplied by for gimbal movement, basically sensitivity
-static constexpr float YAW_SCALE = 0.02f;
-static constexpr float PITCH_SCALE = 0.02f;
+static constexpr float YAW_SCALE = 0.5f;
+static constexpr float PITCH_SCALE = 0.2f;
 //Gimbal Starting angles
 static constexpr float YAW_STARTING_ANGLE = 0.0f;
 static constexpr float PITCH_STARTING_ANGLE = 1.57079632679489661923f; //pi / 2
 //Pitch Angle Limits
 static constexpr float PITCH_MIN_ANGLE = 0.0f; //starting position is initialized as 0
-static constexpr float PITCH_MAX_ANGLE = 0.785398f; //45 degrees
+static constexpr float PITCH_MAX_ANGLE = 2.61799; //150 degrees
 //gimbal yaw and pitch speed limits
-static constexpr float MIN_YAW_SPEED = -8000.0f;
+static constexpr float MIN_YAW_SPEED = 300.0f;
 static constexpr float MAX_YAW_SPEED = 8000.0f; 
-static constexpr float MIN_PITCH_SPEED = -8000.0f;
-static constexpr float MAX_PITCH_SPEED = 8000.0f;
+static constexpr float MIN_PITCH_SPEED = 300.0f;
+static constexpr float MAX_PITCH_SPEED = 20000.0f;
 //Gimbal minimum angles of movement
 static constexpr float YAW_MINIMUM_RADS = .005f;
-static constexpr float PITCH_MINIMUM_RADS = .005f;
+static constexpr float PITCH_MINIMUM_RADS = .01f;
 //minimum value for pitch RPM to be considered stable
 static constexpr float MIN_PITCH_RPM = .0005f;
 //starting pitch angle from when the robot is turned on 
-static constexpr float  STARTING_PITCH = -M_1_PI / 2;
+static constexpr float  STARTING_PITCH = -M_1_PI / 6;
 
 //values for gravity compensation
-static constexpr float TURRET_CG_X = 30.17;
-static constexpr float TURRET_CG_Z = 34.02;
-static constexpr float GRAVITY_COMPENSATION_SCALAR = 7000;
+static constexpr float LEVEL_ANGLE = 1.5708; //90 degrees
+static constexpr float BARREL_LENGTH = 165.0f; //turret barrel length in mm
+static constexpr float BARREL_MIN_HEIGHT = 135.6f; 
+static constexpr float BARREL_LEVEL_HEIGHT = 172.8f; 
+static constexpr float GRAVITY_COMPENSATION_SCALAR = 5500;
 };//struct GIMBAL_CONSTANTS
 #endif

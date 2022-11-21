@@ -2,6 +2,7 @@
 #define IMU_INTERFACE_HPP_
 #include "drivers.hpp"
 #include "modm/math/geometry/angle.hpp"
+#include "controls/standard/standard_constants.hpp"
 
 /* 
 ImuRadInterfrace is a class that will return the values of imu readings in radians. It will also 
@@ -34,9 +35,10 @@ public:
 
 private:
     tap::Drivers *drivers;
+    GIMBAL_CONSTANTS constants;
 
     //starting positions of yaw and pitch gimbal angles in radians.
-    float startingPitch = 0;
+    float startingPitch = constants.STARTING_PITCH;
     float startingYaw = 0;
     float startingRoll = 0;
 

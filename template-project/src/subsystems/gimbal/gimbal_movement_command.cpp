@@ -27,7 +27,10 @@ void  GimbalMovementCommand::execute()
 
 }
 
-void  GimbalMovementCommand::end(bool) { gimbal->controllerInput(0, 0);}
+void  GimbalMovementCommand::end(bool) { 
+    gimbal->controllerInput(0, 0);
+    gimbal->noInputs();
+    }
 
 bool  GimbalMovementCommand::isFinished() const { return false; }
 
