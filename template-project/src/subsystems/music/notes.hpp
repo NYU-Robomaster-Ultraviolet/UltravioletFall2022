@@ -36,5 +36,28 @@ struct Octave7 {
     static constexpr float C = 2093.0f, CS = 2217.46f, D = 2349.32f, DS = 2489.02f, E = 2637.02f,
     F = 2793.83f, FS = 2959.96f, G = 3135.96f, GS = 3322.44f, A = 3520.0f, AS = 3729.31f, B = 3951.07f;
     };//struct Octave7
+struct NoteType{
+    //Integer note values 
+
+    //quarter note
+    static constexpr float Q = 1.0f;
+    //half note
+    static constexpr float H = 2.0f;
+    //doted half note
+    static constexpr float DH = 3.0f;
+    //whole note
+    static constexpr float W = 4.0f;
+
+    //Fractional note values
+
+    //doted quarter note
+    static constexpr float DQ = 1.5f;
+    //Eighth Note
+    static constexpr float E = 0.5f;
+     //Sixteenth Note
+    static constexpr float S = 0.25f;
+    //Thirty-second Note
+    static constexpr float T = 0.125f;
+}; //struct NoteType
 }//namespace music
 #endif

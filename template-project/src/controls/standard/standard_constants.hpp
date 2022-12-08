@@ -23,14 +23,31 @@ static constexpr float CHASSIS_ROTATION_SET_SCALE = 0.1f;
 
 static constexpr float WHEELBASE_LENGTH = 0.366f;
 
-static constexpr float
-//M3505 motor speed PID 
-CHASSIS_MOTOR_KP = 20.0f,
-CHASSIS_MOTOR_KI = 0.2f,
-CHASSIS_MOTOR_KD = 0.0f,
-CHASSIS_MOTOR_MAX_IOUT = 2000.0f, //max integral 
-CHASSIS_MOTOR_MAX_OUT = 16000.0f; //max output
- //CHASSIS PID VALUES
+static constexpr float LEVEL_ANGLE = 1.5708; //90 degrees
+
+struct CHASSIS_CONSTANTS{
+    //max output for chassis motors
+    static constexpr float MAX_CURRENT_OUTPUT = 8000.0f;
+    // Scale factor for converting joystick movement into RPM setpoint
+    static constexpr float RPM_SCALE_FACTOR = 4000.0f;
+
+    ///< Hardware constants, not specific to any particular chassis.
+    static constexpr tap::motor::MotorId FRONT_LEFT_MOTOR_ID = tap::motor::MOTOR3;
+    static constexpr tap::motor::MotorId FRONT_RIGHT_MOTOR_ID = tap::motor::MOTOR4;
+    static constexpr tap::motor::MotorId BACK_RIGHT_MOTOR_ID = tap::motor::MOTOR1;
+    static constexpr tap::motor::MotorId BACK_LEFT_MOTOR_ID = tap::motor::MOTOR2;
+    static constexpr tap::can::CanBus CAN_BUS_MOTORS = tap::can::CanBus::CAN_BUS1;
+
+    //M3505 motor speed PID 
+    static constexpr float
+    CHASSIS_MOTOR_KP = 20.0f,
+    CHASSIS_MOTOR_KI = 0.2f,
+    CHASSIS_MOTOR_KD = 0.0f,
+    CHASSIS_MOTOR_MAX_IOUT = 2000.0f, //max integral 
+    CHASSIS_MOTOR_MAX_OUT = 16000.0f; //max output
+    
+}; //struct CHASSIS_CONSTANTS
+
 
 static constexpr tap::algorithms::SmoothPidConfig YAW_PID = {
     .kp = 600.0f,
@@ -65,8 +82,8 @@ struct GIMBAL_CONSTANTS{
 //Gimbal PID output to motor speed error factor
 static constexpr float MOTOR_SPEED_FACTOR = 200.0f;
 //the value in which controller inputs are multiplied by for gimbal movement, basically sensitivity
-static constexpr float YAW_SCALE = 0.5f;
-static constexpr float PITCH_SCALE = 0.2f;
+static constexpr float YAW_SCALE = 0.2f;
+static constexpr float PITCH_SCALE = 0.035f;
 //Gimbal Starting angles
 static constexpr float YAW_STARTING_ANGLE = 0.0f;
 static constexpr float PITCH_STARTING_ANGLE = 1.57079632679489661923f; //pi / 2
@@ -84,13 +101,13 @@ static constexpr float PITCH_MINIMUM_RADS = .01f;
 //minimum value for pitch RPM to be considered stable
 static constexpr float MIN_PITCH_RPM = .0005f;
 //starting pitch angle from when the robot is turned on 
-static constexpr float  STARTING_PITCH = -M_1_PI / 6;
+static constexpr float  STARTING_PITCH = -0.855211f; //-49 degrees
 
 //values for gravity compensation
 static constexpr float LEVEL_ANGLE = 1.5708; //90 degrees
 static constexpr float BARREL_LENGTH = 165.0f; //turret barrel length in mm
 static constexpr float BARREL_MIN_HEIGHT = 135.6f; 
 static constexpr float BARREL_LEVEL_HEIGHT = 172.8f; 
-static constexpr float GRAVITY_COMPENSATION_SCALAR = 5500;
+static constexpr float GRAVITY_COMPENSATION_SCALAR = 6000;
 };//struct GIMBAL_CONSTANTS
 #endif

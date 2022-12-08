@@ -12,6 +12,7 @@
 #include "tap/algorithms/smooth_pid.hpp"
 #include "tap/architecture/clock.hpp"
 #include "controls/standard/imu_interface.hpp"
+#include "modm/math/geometry/angle.hpp"
 
 using namespace tap::algorithms;
 
@@ -36,7 +37,8 @@ public:
       currentYawMotorSpeed(0.0f),
       currentPitchMotorSpeed(0.0f),
       yawMotorPid(YAW_PID),
-      pitchMotorPid(PITCH_PID)
+      pitchMotorPid(PITCH_PID),
+      imu(drivers)
       {}
 
     void initialize() override;
@@ -51,8 +53,8 @@ public:
 
     void setYawAngle(float angle) { targetYaw = angle;}
 
-    void setPitchAngle(float angle) {targetPitch = limitVal<float>(angle , constants.PITCH_MIN_ANGLE, 
-        constants.PITCH_MAX_ANGLE - constants.STARTING_PITCH);}
+    void setPitchAngle(float angle) {targetPitch = limitVal<float>(angle , startingPitch, 
+        constants.PITCH_MAX_ANGLE);}
 
     float getYawMotorRPM() const {return yawMotor.isMotorOnline() ? yawMotor.getShaftRPM() : 0.0f; }
     float getPitchMotorRPM() const {return pitchMotor.isMotorOnline() ? pitchMotor.getShaftRPM() : 0.0f; }
@@ -80,6 +82,9 @@ public:
     //this methods will take into consideration the current pitch of the gimbal and return a float value that will lock it in place
     float gravityCompensation();
 
+    //this method sets the IMU pitch angles
+    void setIMU(float yaw, float p);
+
 private:
     tap::motor::DjiMotor yawMotor;
     tap::motor::DjiMotor pitchMotor;
@@ -87,9 +92,12 @@ private:
     //starting angle
     float startingPitch;
     float startingYaw;
-    //target angle, given in a value between -1 and 1
+    //current angles in radians from motor encoder data
     float targetYaw;
     float targetPitch;
+    //current angles in radians from IMU
+    float imuYaw;
+    float imuPitch;
     //motor speed given in revolutions / min
     float currentYawMotorSpeed;
     float currentPitchMotorSpeed;
@@ -120,6 +128,9 @@ private:
     float motorSpeedFactor;
     //checks if there are inputs or not
     bool inputsFound = false;
+
+    //imu interface
+    ImuRadInterface imu;
 }; //class GimbalSubsystem
 }//namespace gimbal
 

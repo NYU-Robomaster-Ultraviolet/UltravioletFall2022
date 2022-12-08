@@ -4,6 +4,7 @@
 #include "tap/errors/create_errors.hpp"
 
 #include "controls/standard/control_interface.hpp"
+#include "controls/standard/standard_constants.hpp"
 
 namespace gimbal
 {
@@ -16,15 +17,13 @@ GimbalMovementCommand::GimbalMovementCommand(GimbalSubsystem *const gimbal, src:
     }
     this->addSubsystemRequirement(dynamic_cast<tap::control::Subsystem *>(gimbal));
 }
-void  GimbalMovementCommand::initialize() {gimbal->controllerInput(0, 0);}
+void  GimbalMovementCommand::initialize() {gimbal->controllerInput(0, LEVEL_ANGLE);}
 
 void  GimbalMovementCommand::execute()
 {
+    gimbal->setIMU(drivers->imu_rad_interface.getYaw(), drivers->imu_rad_interface.getPitch());
     gimbal->controllerInput(drivers->control_interface.getGimbalYawInput(),
         drivers->control_interface.getGimbalPitchInput());
-    //if(gimbal->motorOnline()) drivers->leds.set(drivers->leds.Blue, true);
-    //else drivers->leds.set(drivers->leds.Red, true);
-
 }
 
 void  GimbalMovementCommand::end(bool) { 

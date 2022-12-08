@@ -13,25 +13,32 @@ ChassisMovementCommand::ChassisMovementCommand(
     : chassis(chassis),
       drivers(drivers)
 {
-    if (chassis == nullptr)
-    {
-        return;
-    }
-    this->addSubsystemRequirement(dynamic_cast<tap::control::Subsystem *>(chassis));
+    if (chassis == nullptr)  return; // checks if subsystem exists
+    this->addSubsystemRequirement(dynamic_cast<tap::control::Subsystem *>(chassis)); //set requirement
 }
 
+//stop any movement
 void  ChassisMovementCommand::initialize() {chassis->setDesiredOutput(0, 0, 0);}
 
 void  ChassisMovementCommand::execute()
 {
+    //gets current cos and sin of yaw angle from starting point of gimbal
+    //float cosYaw = cosf(drivers->imu_rad_interface.getYaw()); 
+    //float sinYaw = sinf(drivers->imu_rad_interface.getYaw());
+    //gets the controller inputs
+    float xInput = drivers->control_interface.getChassisXInput();
+    float yInput = drivers->control_interface.getChassisYInput();
+    //applies rotation matrix to inputs to change inputs based on gimbal position
+    //float xOutput = (cosYaw * xInput) - (sinYaw * yInput);
+    //float yOutput = (cosYaw * yInput) + (sinYaw * xInput);
+    //sends values to the chassis subsystem
     chassis->setDesiredOutput(
-        drivers->control_interface.getChassisXInput(),
-        drivers->control_interface.getChassisYInput(),
+        xInput,
+        yInput,
         drivers->control_interface.getChassisRotationInput());
-    //if(chassis->motorOnline()) drivers->leds.set(drivers->leds.Blue, true);
-    //else drivers->leds.set(drivers->leds.Red, true);
 }
 
+//stops movement again
 void  ChassisMovementCommand::end(bool) { chassis->setDesiredOutput(0, 0, 0); }
 
 bool  ChassisMovementCommand::isFinished() const { return false; }

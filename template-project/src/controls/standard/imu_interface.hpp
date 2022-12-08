@@ -15,9 +15,9 @@ public:
     ImuRadInterface(tap::Drivers *drivers) : drivers(drivers) {}
 
     //getters for offset from angles from starting position from radians 
-    float getYaw() const{return modm::toRadian(drivers->bmi088.getPitch()) - startingYaw;}
-    float getPitch() const{return modm::toRadian(drivers->bmi088.getRoll()) - startingPitch;}
-    float getRoll() const{return modm::toRadian(drivers->bmi088.getYaw()) - startingRoll;}
+    float getYaw() const{return modm::toRadian(drivers->bmi088.getYaw()) + startingYaw;}
+    float getPitch() const{return modm::toRadian(drivers->bmi088.getPitch()) + startingPitch;}
+    float getRoll() const{return modm::toRadian(drivers->bmi088.getRoll()) + startingRoll;}
 
     //getters for velocities from gyro sensor, converted in rad/sec
     float getGyroX() const {return modm::toRadian(drivers->bmi088.getGx());}
@@ -38,7 +38,7 @@ private:
     GIMBAL_CONSTANTS constants;
 
     //starting positions of yaw and pitch gimbal angles in radians.
-    float startingPitch = constants.STARTING_PITCH;
+    float startingPitch = constants.LEVEL_ANGLE + constants.STARTING_PITCH;
     float startingYaw = 0;
     float startingRoll = 0;
 

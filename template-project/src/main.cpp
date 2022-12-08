@@ -75,8 +75,8 @@ int main()
     Board::initialize();
     //Timer for bmi088 periodicIMUUpdate (only in TYPE-C board)
     tap::arch::PeriodicMilliTimer mainLoopTimeout(1000.0f / SAMPLE_FREQUENCY);
-    src::control::initializeSubsystemCommands(drivers);
     initializeIo(drivers);
+    src::control::initializeSubsystemCommands(drivers);
 
 #ifdef PLATFORM_HOSTED
     tap::motorsim::SimHandler::resetMotorSims();
@@ -97,8 +97,6 @@ int main()
             PROFILE(drivers->profiler, drivers->djiMotorTxHandler.encodeAndSendCanData, ());
             PROFILE(drivers->profiler, drivers->terminalSerial.update, ());
         }
-        //drivers->leds.set(drivers->leds.Blue, true);
-        //tap::buzzer::playNote(&drivers->pwm, 30.0f);
         modm::delay_us(10);
     }
     return 0;
