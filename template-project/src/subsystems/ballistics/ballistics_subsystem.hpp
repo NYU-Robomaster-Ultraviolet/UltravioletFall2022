@@ -33,9 +33,9 @@ public:
 
     void handle_auto_aim();//Nirav
     void calc_pitch_yaw(vector<vector<float>> target_info, vector<vector<float>> our1_info,float velocity,float barrel_len);//Nirav
-    void make_angles(); //Lalit
+    void make_angles(float currentPitch, float currentYaw, std::vector<std::vector<float>> our1_info, std::vector<float> &pitchYawVec);
 
-    inline float wrappedEncoderValueToRadians(int64_t encoderValue)
+    inline float wrappedEncoderValueToRadians(int64_t encoderValue);
 
 
 
@@ -60,6 +60,10 @@ private:
   //current angles in radians
     float currentYaw;
     float currentPitch;
+
+    vector<float> pitchYawVec;
+    
+
 
     
 
