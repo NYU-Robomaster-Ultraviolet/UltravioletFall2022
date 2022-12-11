@@ -1,15 +1,29 @@
 #include "chassis_subsystem.hpp"
 
 #include "tap/communication/serial/remote.hpp"
-#include "tap/algorithms/math_user_utils.hpp"
+//#include "tap/algorithms/math_user_utils.hpp"
 
 using namespace tap;
 
 namespace chassis
 {
-
+void ChassisSubsystem::updateWheelvalues(){
+    float FRRPM = frontRightMotor.getShaftRPM();
+    float FLRPM = frontLeftMotor.getShaftRPM();
+    float BRRPM = backRightMotor.getShaftRPM();
+    float BLRPM = backLeftMotor.getShaftRPM();
+    float FRPos = wrappedEncoderValueToRadians(frontRightMotor.getEncoderUnwrapped());
+    float FLPos = wrappedEncoderValueToRadians(frontLeftMotor.getEncoderUnwrapped());
+    float BRPos = wrappedEncoderValueToRadians(backRightMotor.getEncoderUnwrapped());
+    float BLPos = wrappedEncoderValueToRadians(backLeftMotor.getEncoderUnwrapped());
+    //format: name,RPM,EncoderPosition(rad);
+    outputString = "FR," + std::to_string(FRRPM) + ',' +  std::to_string(FRPos) + ';' + 
+    "FL," + std::to_string(FLRPM) + ',' +  std::to_string(FLPos) + ';' + 
+    "BR," + std::to_string(BRRPM) + ',' +  std::to_string(BRPos) + ';' + 
+    "BL," + std::to_string(BLRPM) + ',' +  std::to_string(BLPos) + ';' ;
+}
 void ChassisSubsystem::initialize()
-{
+{   
     frontLeftMotor.initialize();
     frontRightMotor.initialize();
     backLeftMotor.initialize();

@@ -28,6 +28,8 @@ void  ChassisMovementCommand::execute()
         drivers->control_interface.getChassisXInput(),
         drivers->control_interface.getChassisYInput(),
         drivers->control_interface.getChassisRotationInput());
+    //if(chassis->motorOnline()) drivers->leds.set(drivers->leds.Blue, true);
+    //else drivers->leds.set(drivers->leds.Red, true);
 }
 
 void  ChassisMovementCommand::end(bool) { chassis->setDesiredOutput(0, 0, 0); }

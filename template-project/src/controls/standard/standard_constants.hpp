@@ -1,7 +1,11 @@
 #ifndef STANDARD_CONSTANTS_HPP_
 #define STANDARD_CONSTANTS_HPP_
+
+#include "tap/algorithms/smooth_pid.hpp"
+#include "modm/math/geometry/angle.hpp"
+
 /**
- * @brief Definitions for operator interface constants (may change based on preference of drivers)
+ * @brief constants used for configeration of classes when building standard robot
  *
  */
 
@@ -28,36 +32,65 @@ CHASSIS_MOTOR_MAX_IOUT = 2000.0f, //max integral
 CHASSIS_MOTOR_MAX_OUT = 16000.0f; //max output
  //CHASSIS PID VALUES
 
-struct GIMBAL_PID {
-    //pitch speed close-loop PID params, max out and max iout
-    static constexpr float 
-    PITCH_SPEED_PID_KP = 2000.0f, 
-    PITCH_SPEED_PID_KI = 60.0f, 
-    PITCH_SPEED_PID_KD = 0.0f,
-    PITCH_SPEED_PID_MAX_OUT = 15000.0f,
-    PITCH_SPEED_PID_MAX_IOUT = 5000.0f,
+static constexpr tap::algorithms::SmoothPidConfig YAW_PID = {
+    .kp = 600.0f,
+    .ki = 0.0f,
+    .kd = 500.0f,
+    .maxICumulative = 10.0f,
+    .maxOutput = 16000.0f,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
 
-    //yaw speed close-loop PID params, max out and max iout
-    YAW_SPEED_PID_KP = 3600.0f,
-    YAW_SPEED_PID_KI = 20.0f,
-    YAW_SPEED_PID_KD = 0.0f,
-    YAW_SPEED_PID_MAX_OUT = 30000.0f, 
-    YAW_SPEED_PID_MAX_IOUT = 5000.0f, 
+static constexpr tap::algorithms::SmoothPidConfig PITCH_PID = {
+    .kp = 1850.0f,
+    .ki = 0.0f,
+    .kd = 150.0f,
+    .maxICumulative = 10.0f,
+    .maxOutput = 16000.0f,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.5f,
+    .errorDerivativeFloor = 0.0f,
+};
+ //struct GIMBAL_SMOOTH_PID
 
-    //pitch gyro angle close-loop PID params, max out and max iout
-    PITCH_GYRO_ABSOLUTE_PID_KP = 15.0f,	// JERRY: 15.0f
-    PITCH_GYRO_ABSOLUTE_PID_KI = 0.0f,		//JERRY: 0.0f
-    PITCH_GYRO_ABSOLUTE_PID_KD = 0.0f,		//JERRY: 0.0f
+struct GIMBAL_CONSTANTS{
+//Gimbal PID output to motor speed error factor
+static constexpr float MOTOR_SPEED_FACTOR = 200.0f;
+//the value in which controller inputs are multiplied by for gimbal movement, basically sensitivity
+static constexpr float YAW_SCALE = 0.5f;
+static constexpr float PITCH_SCALE = 0.2f;
+//Gimbal Starting angles
+static constexpr float YAW_STARTING_ANGLE = 0.0f;
+static constexpr float PITCH_STARTING_ANGLE = 1.57079632679489661923f; //pi / 2
+//Pitch Angle Limits
+static constexpr float PITCH_MIN_ANGLE = 0.0f; //starting position is initialized as 0
+static constexpr float PITCH_MAX_ANGLE = 2.61799; //150 degrees
+//gimbal yaw and pitch speed limits
+static constexpr float MIN_YAW_SPEED = 300.0f;
+static constexpr float MAX_YAW_SPEED = 8000.0f; 
+static constexpr float MIN_PITCH_SPEED = 300.0f;
+static constexpr float MAX_PITCH_SPEED = 20000.0f;
+//Gimbal minimum angles of movement
+static constexpr float YAW_MINIMUM_RADS = .005f;
+static constexpr float PITCH_MINIMUM_RADS = .01f;
+//minimum value for pitch RPM to be considered stable
+static constexpr float MIN_PITCH_RPM = .0005f;
+//starting pitch angle from when the robot is turned on 
+static constexpr float  STARTING_PITCH = -M_1_PI / 6;
 
-    PITCH_GYRO_ABSOLUTE_PID_MAX_OUT = 10.0f,
-    PITCH_GYRO_ABSOLUTE_PID_MAX_IOUT = 0.0f,
-
-    //yaw gyro angle close-loop PID params, max out and max iout
-    YAW_GYRO_ABSOLUTE_PID_KP = 15.0f,	// JERRY'code, chewy's pan 26.0f
-    YAW_GYRO_ABSOLUTE_PID_KI = 0.0f,	// JERRY'code, chewy's pan 0.0f
-    YAW_GYRO_ABSOLUTE_PID_KD = 0.0f,// JERRY'code, chewy's pan 0.3f
-    YAW_GYRO_ABSOLUTE_PID_MAX_OUT = 10.0f,  // Jerry 10.0f
-    YAW_GYRO_ABSOLUTE_PID_MAX_IOUT = 0.0f;  //Jerry 0.0f
-}; //struct GIMBAL_PID
-
+//values for gravity compensation
+static constexpr float LEVEL_ANGLE = 1.5708; //90 degrees
+static constexpr float BARREL_LENGTH = 165.0f; //turret barrel length in mm
+static constexpr float BARREL_MIN_HEIGHT = 135.6f; 
+static constexpr float BARREL_LEVEL_HEIGHT = 172.8f; 
+static constexpr float GRAVITY_COMPENSATION_SCALAR = 5500;
+};//struct GIMBAL_CONSTANTS
 #endif

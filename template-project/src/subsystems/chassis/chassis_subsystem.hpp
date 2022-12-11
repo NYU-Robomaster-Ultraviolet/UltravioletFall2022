@@ -6,13 +6,14 @@
 #include "tap/motor/dji_motor.hpp"
 #include "tap/util_macros.hpp"
 #include "controls/standard/standard_constants.hpp"
-
+#include "drivers.hpp"
 
 namespace chassis
 {
 /**
  * A bare bones Subsystem for interacting with a 4 wheeled chassis.
  */
+
 class ChassisSubsystem : public tap::control::Subsystem
 {
 public:
@@ -31,7 +32,7 @@ public:
      * Constructs a new ChassisSubsystem with default parameters specified in
      * the private section of this class.
      */
-    ChassisSubsystem(tap::Drivers *drivers)
+    ChassisSubsystem(src::Drivers *drivers)
         : tap::control::Subsystem(drivers),
           frontLeftMotor(drivers, FRONT_LEFT_MOTOR_ID, CAN_BUS_MOTORS, false, "front left motor"),
           frontRightMotor(drivers, FRONT_RIGHT_MOTOR_ID, CAN_BUS_MOTORS, true, "front right motor"),
@@ -47,6 +48,9 @@ public:
           backRightDesiredRpm(0)
     {
     }
+    void updateWheelvalues();
+
+    std::string getUartOutput(){return outputString;}
 
     ChassisSubsystem(const ChassisSubsystem &other) = delete;
 
@@ -65,6 +69,13 @@ public:
     void setDesiredOutput(float x, float y, float r);
 
     void updateRpmPid(modm::Pid<float>* pid, tap::motor::DjiMotor* const motor, float desiredRpm);
+
+    bool motorOnline() {return frontLeftMotor.isMotorOnline() && frontRightMotor.isMotorOnline() && 
+    backLeftMotor.isMotorOnline() && backRightMotor.isMotorOnline();}
+
+    inline float wrappedEncoderValueToRadians(int64_t encoderValue) {
+        return (M_TWOPI * static_cast<float>(encoderValue)) / tap::motor::DjiMotor::ENC_RESOLUTION;
+    }
 
     const tap::motor::DjiMotor &getFrontLeftMotor() const { return frontLeftMotor; }
     const tap::motor::DjiMotor &getFrontRightMotor() const { return frontRightMotor; }
@@ -100,6 +111,8 @@ private:
     // Scale factor for converting joystick movement into RPM setpoint
     static constexpr float RPM_SCALE_FACTOR = 4000.0f;
 
+    //
+    std::string outputString;
 };  // class ChassisSubsystem
 
 }  // namespace chassis

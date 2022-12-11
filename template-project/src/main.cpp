@@ -36,6 +36,7 @@
 /* communication includes ---------------------------------------------------*/
 #include "drivers.hpp"
 #include "drivers_singleton.hpp"
+#include "tap/communication/sensors/buzzer/buzzer.hpp"
 
 /* error handling includes --------------------------------------------------*/
 #include "tap/errors/create_errors.hpp"
@@ -96,6 +97,8 @@ int main()
             PROFILE(drivers->profiler, drivers->djiMotorTxHandler.encodeAndSendCanData, ());
             PROFILE(drivers->profiler, drivers->terminalSerial.update, ());
         }
+        //drivers->leds.set(drivers->leds.Blue, true);
+        //tap::buzzer::playNote(&drivers->pwm, 30.0f);
         modm::delay_us(10);
     }
     return 0;
@@ -113,7 +116,6 @@ static void initializeIo(src::Drivers *drivers)
     //Added initialization of bmi088 (only in TYPE-C board)
     drivers->bmi088.initialize(SAMPLE_FREQUENCY, 0.1f, 0.0f);
     drivers->bmi088.requestRecalibration();
-    
     drivers->refSerial.initialize();
     //drivers->terminalSerial.initialize();
     drivers->schedulerTerminalHandler.init();
@@ -132,9 +134,4 @@ static void updateIo(src::Drivers *drivers)
     drivers->canRxHandler.pollCanData();
     drivers->refSerial.updateSerial();
     drivers->remote.read();
-    
-    yaw = drivers->bmi088.getYaw();
-    pitch = drivers->bmi088.getPitch();
-    roll = drivers->bmi088.getRoll();
-    imuStatus = drivers->bmi088.getImuState();
 }
