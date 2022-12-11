@@ -26,21 +26,7 @@ public:
       targetPitch(0.0f)
       {}
 
-    void initialize()
-    {
-      pastTime = tap::arch::clock::getTimeMilliseconds();
-      yawMotor.initialize();
-      yawMotor.setDesiredOutput(0);
-      pitchMotor.initialize();
-      pitchMotor.setDesiredOutput(0);
-      uint16_t currentPitchEncoder = pitchMotor.getEncoderUnwrapped();
-      uint16_t currentYawEncoder = yawMotor.getEncoderUnwrapped();
-      startingPitch = wrappedEncoderValueToRadians(currentPitchEncoder);
-      startingYaw = wrappedEncoderValueToRadians(currentYawEncoder);
-    }
-    //try to push it
-    //add some thing here
-    //initilaizes the gimbal motors and make them not get any power
+    void initialize(); //Shangyu
 
 
     void refresh() override;//Srikar
