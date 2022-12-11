@@ -12,7 +12,7 @@
 #include "tap/algorithms/smooth_pid.hpp"
 #include "tap/architecture/clock.hpp"
 #include "controls/standard/imu_interface.hpp"
-#include <vector>
+
 
 using namespace tap::algorithms;
 
@@ -46,8 +46,10 @@ public:
     void refresh() override;//Srikar
 
     void handle_auto_aim();//Nirav
-    void calc_pitch_yaw();//Nirav
+    void calc_pitch_yaw(vector<vector<float>> target_info, vector<vector<float>> our1_info,float velocity,float barrel_len);//Nirav
     void make_angles(); //Lalit
+
+    inline float wrappedEncoderValueToRadians(int64_t encoderValue)
 
 
 
@@ -65,8 +67,12 @@ private:
     float targetYaw;
     float targetPitch;
 
-    vector<float> curr;
-    vector<float> target;
+    tap::motor::DjiMotor yawMotor;
+    tap::motor::DjiMotor pitchMotor;
+
+  //current angles in radians
+    float currentYaw;
+    float currentPitch;
 
     
 
