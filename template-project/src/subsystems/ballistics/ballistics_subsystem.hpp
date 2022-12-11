@@ -12,6 +12,7 @@
 #include "tap/algorithms/smooth_pid.hpp"
 #include "tap/architecture/clock.hpp"
 #include "controls/standard/imu_interface.hpp"
+#include <vector>
 
 using namespace tap::algorithms;
 
@@ -25,17 +26,33 @@ public:
       targetPitch(0.0f)
       {}
 
+    void initialize() override;//Shangyu
+    void refresh() override;//Srikar
+
+    void handle_auto_aim();//Nirav
+    void calc_pitch_yaw();//Nirav
+    void make_angles(); //Lalit
+
+
 
 private:
+    //current gimbal pitch and yaw
     float startingPitch;
     float startingYaw;
-    //target angle, given in a value between -1 and 1
+
+    bool isTarget;
+    bool autoaim;
+
+    float barrelLength;
+    float launchVelocity;
+
     float targetYaw;
     float targetPitch;
 
-    //current angles in radians
-    float currentYaw;
-    float currentPitch;
+    vector<float> curr;
+    vector<float> target;
+
+    
 
 }; //class GimbalSubsystem
 }//namespace gimbal
