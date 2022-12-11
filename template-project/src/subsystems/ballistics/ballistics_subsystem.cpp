@@ -4,7 +4,15 @@
 
 namespace ballistics{
 void BallisticsSubsystem::initialize(){
-    
+    pastTime = tap::arch::clock::getTimeMilliseconds();
+    yawMotor.initialize();
+    yawMotor.setDesiredOutput(0);
+    pitchMotor.initialize();
+    pitchMotor.setDesiredOutput(0);
+    uint16_t currentPitchEncoder = pitchMotor.getEncoderUnwrapped();
+    uint16_t currentYawEncoder = yawMotor.getEncoderUnwrapped();
+    startingPitch = wrappedEncoderValueToRadians(currentPitchEncoder);
+    startingYaw = wrappedEncoderValueToRadians(currentYawEncoder);
 }
 
 void BallisticsSubsystem::refresh(){ 

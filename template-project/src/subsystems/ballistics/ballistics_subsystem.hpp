@@ -40,6 +40,7 @@ public:
 
 
 private:
+    float pastTime;
     //current gimbal pitch and yaw
     float startingPitch;
     float startingYaw;
