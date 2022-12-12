@@ -2,6 +2,33 @@
 #include "modm/math/geometry/angle.hpp"
 
 namespace gimbal{
+
+//constructor
+GimbalSubsystem::GimbalSubsystem(src::Drivers *drivers)
+    : tap::control::Subsystem(drivers), 
+    yawMotor(drivers,
+               constants.YAW_MOTOR_ID,
+               constants.CAN_BUS_MOTORS,
+               false,
+               "Yaw Motor",
+               tap::motor::DjiMotor::ENC_RESOLUTION / 2,
+               constants.STARTING_YAW_ROT
+               ),
+      pitchMotor(drivers,
+                constants.PITCH_MOTOR_ID,
+                constants.CAN_BUS_MOTORS,
+                false,
+                "Pitch Motor"
+                ),
+      targetYaw(0.0f),
+      targetPitch(0.0f),
+      currentYawMotorSpeed(0.0f),
+      currentPitchMotorSpeed(0.0f),
+      yawMotorPid(constants.YAW_PID),
+      pitchMotorPid(constants.PITCH_PID),
+      imu(drivers)
+      {}
+
     //initilaizes the gimbal motors and make them not get any power
 void GimbalSubsystem::initialize(){
     pastTime = tap::arch::clock::getTimeMilliseconds();
@@ -10,14 +37,16 @@ void GimbalSubsystem::initialize(){
     yawMotor.setDesiredOutput(0);
     pitchMotor.initialize();
     pitchMotor.setDesiredOutput(0);
-    uint16_t currentPitchEncoder = pitchMotor.getEncoderUnwrapped();
-    uint16_t currentYawEncoder = yawMotor.getEncoderUnwrapped();
-    startingPitch = wrappedEncoderValueToRadians(currentPitchEncoder) + constants.STARTING_PITCH + constants.LEVEL_ANGLE;
-    startingYaw = wrappedEncoderValueToRadians(currentYawEncoder);
+    uint32_t currentPitchEncoder = pitchMotor.getEncoderUnwrapped();
+    uint32_t currentYawEncoder = yawMotor.getEncoderUnwrapped();
+    startingPitchEncoder = wrappedEncoderValueToRadians(currentPitchEncoder);
+    startingYawEncoder = wrappedEncoderValueToRadians(currentYawEncoder);
+    startingPitch = startingPitchEncoder;
+    startingYaw = startingYawEncoder;
     currentYaw = startingYaw;
     currentPitch = startingPitch;
     targetYaw = startingYaw;
-    targetPitch = constants.LEVEL_ANGLE;
+    targetPitch = startingPitch;
 }
 
 void GimbalSubsystem::refresh(){ 
@@ -28,18 +57,20 @@ void GimbalSubsystem::refresh(){
     if(inputsFound){
         if(yawMotor.isMotorOnline()){
             currentYawMotorSpeed = getYawMotorRPM(); //gets the rotational speed from motor
-            uint16_t currentYawEncoder = yawMotor.getEncoderUnwrapped();
+            uint32_t currentYawEncoder = yawMotor.getEncoderWrapped();
             currentYaw = wrappedEncoderValueToRadians(currentYawEncoder);
-            //drivers->leds.set(drivers->leds.Blue, currentPitch > LEVEL_ANGLE);
-            //drivers->leds.set(drivers->leds.Red, currentYaw < LEVEL_ANGLE);
             updateYawPid();
         }
         if(pitchMotor.isMotorOnline()){
             currentPitchMotorSpeed = getPitchMotorRPM();
-            uint16_t currentPitchEncoder = pitchMotor.getEncoderUnwrapped();
-            currentPitch = wrappedEncoderValueToRadians(currentPitchEncoder) + constants.STARTING_PITCH + constants.LEVEL_ANGLE;
+            uint32_t currentPitchEncoder = pitchMotor.getEncoderWrapped();
+            currentPitch = wrappedEncoderValueToRadians(currentPitchEncoder);
             updatePitchPid();
         }
+    }
+    else{
+        targetPitch = currentPitch;
+        targetYaw = currentYaw;
     }
 }
 
@@ -51,7 +82,9 @@ inline float GimbalSubsystem::wrappedEncoderValueToRadians(int64_t encoderValue)
 //this function will use the angel pid to determine the angel the robot will need to move to, then use a motor speed pid to change
 //the motor speed accordingly
 void GimbalSubsystem::updateYawPid(){
-    //check if yaw is locked.
+    //makes sure that error does not exceded maximum error in either side to maintain better control
+    if(targetYaw - currentYaw > constants.MAX_YAW_ERROR) targetYaw = currentYaw + constants.MAX_YAW_ERROR;
+    else if(targetYaw - currentYaw < -constants.MAX_YAW_ERROR) targetYaw = currentYaw - constants.MAX_YAW_ERROR;
     //find error
     yawError = (targetYaw - currentYaw) * constants.MOTOR_SPEED_FACTOR;
     if(-(constants.YAW_MINIMUM_RADS) < yawError && yawError < constants.YAW_MINIMUM_RADS){
@@ -83,11 +116,7 @@ void GimbalSubsystem::updatePitchPid(){
 //this method will check if the motor is turning, and will return a new output to try to reach stable position
 float GimbalSubsystem::gravityCompensation(){
     float limitAngle = M_PI / 2;
-    //greater than -40 degrees
-    //drivers->leds.set(drivers->leds.Red, imuPitch > constants.LEVEL_ANGLE);
-    //drivers->leds.set(drivers->leds.Blue, imuPitch < constants.LEVEL_ANGLE);
-    //if(currentPitch > 0.698132f) 
-    limitAngle = limitVal<float>(currentPitch - (constants.LEVEL_ANGLE * 2), -M_PI, M_PI);
+    limitAngle = limitVal<float>(currentPitch - (constants.LEVEL_ANGLE), -M_PI, M_PI);
     return constants.GRAVITY_COMPENSATION_SCALAR * cosf(limitAngle);
 }
 
@@ -100,7 +129,7 @@ void GimbalSubsystem::controllerInput(float yawInput, float pitchInput){
 
 //this is the function that is called when CV team is sending offset angles through UART
 void GimbalSubsystem::cvInput(float yawInput, float pitchInput){
-    setYawAngle(yawInput);
+    //setYawAngle(yawInput);
     setPitchAngle(pitchInput);
     inputsFound = true;
 }

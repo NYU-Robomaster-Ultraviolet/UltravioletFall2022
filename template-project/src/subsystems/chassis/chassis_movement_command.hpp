@@ -5,6 +5,7 @@
 
 #include "chassis_subsystem.hpp"
 #include "drivers.hpp"
+#include "subsystems/gimbal/gimbal_motor_interface.hpp"
 namespace chassis{
 
 class ChassisMovementCommand : public tap::control::Command{
@@ -16,7 +17,7 @@ public:
      * @param[in] chassis a pointer to the chassis to be passed in that this
      *      Command will interact with.
      */
-    ChassisMovementCommand(ChassisSubsystem *const chassis, src::Drivers *drivers);
+    ChassisMovementCommand(ChassisSubsystem *const chassis, src::Drivers *drivers, gimbal::GimbalInterface* gimbal);
 
     //copy controls
     ChassisMovementCommand(const ChassisMovementCommand &other) = delete;
@@ -55,6 +56,8 @@ private:
     ChassisSubsystem *const chassis;
 
     src::Drivers *drivers;
+
+    gimbal::GimbalInterface* gimbalInterface;
 }; //class ChassisMovementCommand : public tap::control::Command
 } //namespace Chassis
 #endif //CHASSIS_MOVEMENT_COMMAND_HPP_ 

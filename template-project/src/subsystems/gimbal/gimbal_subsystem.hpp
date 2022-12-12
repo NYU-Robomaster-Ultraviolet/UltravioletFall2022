@@ -20,40 +20,18 @@ namespace gimbal{
 class GimbalSubsystem : public tap::control::Subsystem
 {
 public:
-    GimbalSubsystem(src::Drivers *drivers)
-    : tap::control::Subsystem(drivers), 
-    yawMotor(drivers,
-               tap::motor::MOTOR5,
-               tap::can::CanBus::CAN_BUS2,
-               false,
-               "Yaw Motor"),
-      pitchMotor(drivers,
-                 tap::motor::MOTOR6,
-                 tap::can::CanBus::CAN_BUS2,
-                 false,
-                 "Pitch Motor"),
-      targetYaw(0.0f),
-      targetPitch(0.0f),
-      currentYawMotorSpeed(0.0f),
-      currentPitchMotorSpeed(0.0f),
-      yawMotorPid(YAW_PID),
-      pitchMotorPid(PITCH_PID),
-      imu(drivers)
-      {}
+    GimbalSubsystem(src::Drivers *drivers);
 
     void initialize() override;
     void refresh() override;
 
     const char* getName() override {return "gimbal subsystem";}
 
-    void setYawOutput(float output);
-    void setPitchOutput(float output);
-
     static inline float wrappedEncoderValueToRadians(int64_t encoderValue);
 
     void setYawAngle(float angle) { targetYaw = angle;}
 
-    void setPitchAngle(float angle) {targetPitch = limitVal<float>(angle , startingPitch, 
+    void setPitchAngle(float angle) {targetPitch = limitVal<float>(angle , constants.PITCH_MIN_ANGLE , 
         constants.PITCH_MAX_ANGLE);}
 
     float getYawMotorRPM() const {return yawMotor.isMotorOnline() ? yawMotor.getShaftRPM() : 0.0f; }
@@ -62,6 +40,10 @@ public:
     //getters for motor speeds in rad/s, rpm * (pi / 120)
     float getYawVelocity() const {return (M_PI / 120) * yawMotor.getShaftRPM();}
     float getPitchVelocity() const {return (M_PI / 120) * pitchMotor.getShaftRPM();}
+
+    //getters for current motor positions
+    float getYawEncoder() const {return currentYaw;}
+    float getPitchEncoder() const {return currentPitch;}
 
     //these methods will update both PID calculators and set motor speeds
     void updateYawPid();
@@ -90,6 +72,9 @@ private:
     tap::motor::DjiMotor pitchMotor;
 
     //starting angle
+    float startingPitchEncoder;
+    float startingYawEncoder;
+
     float startingPitch;
     float startingYaw;
     //current angles in radians from motor encoder data

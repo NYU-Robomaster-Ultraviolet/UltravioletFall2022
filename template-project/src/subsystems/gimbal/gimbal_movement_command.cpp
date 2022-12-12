@@ -17,7 +17,7 @@ GimbalMovementCommand::GimbalMovementCommand(GimbalSubsystem *const gimbal, src:
     }
     this->addSubsystemRequirement(dynamic_cast<tap::control::Subsystem *>(gimbal));
 }
-void  GimbalMovementCommand::initialize() {gimbal->controllerInput(0, LEVEL_ANGLE);}
+void  GimbalMovementCommand::initialize() {gimbal->cvInput(LEVEL_ANGLE, 0);}
 
 void  GimbalMovementCommand::execute()
 {

@@ -15,6 +15,7 @@
 #include "subsystems/chassis/chassis_movement_command.hpp"
 #include "subsystems/gimbal/gimbal_movement_command.hpp"
 #include "subsystems/music/music_player.hpp"
+#include "subsystems/gimbal/gimbal_motor_interface.hpp"
 
 
 src::driversFunc drivers = src::DoNotUse_getDrivers;
@@ -33,8 +34,10 @@ GimbalSubsystem gimbal(drivers());
 // Robot Specific Controllers ------------------------------------------------
 MusicDisk disk;
 MusicPlayer sound_track(drivers(), disk);
+GimbalInterface gimbalInterface(&gimbal);
+
 // Define commands here ---------------------------------------------------
-ChassisMovementCommand chassisMovement(&chassis, drivers());
+ChassisMovementCommand chassisMovement(&chassis, drivers(), &gimbalInterface);
 GimbalMovementCommand gimbalMovement(&gimbal, drivers());
 // Define command mappings here -------------------------------------------
 HoldCommandMapping rightSwitchMid(drivers(), {&chassisMovement, &gimbalMovement}, 
@@ -65,7 +68,7 @@ void startupCommands(src::Drivers* drivers) {
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers* drivers) {
     drivers->commandMapper.addMap(&rightSwitchMid);
-    drivers->commandMapper.addMap(&rightSwitchUp);
+    //drivers->commandMapper.addMap(&rightSwitchUp);
 }
 }//namespace src::control
 
