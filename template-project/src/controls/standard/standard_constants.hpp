@@ -98,7 +98,7 @@ static constexpr float MOTOR_SPEED_FACTOR = 200.0f;
 
 //the value in which controller inputs are multiplied by for gimbal movement, basically sensitivity
 static constexpr float YAW_SCALE = 0.25f;
-static constexpr float PITCH_SCALE = 0.035f;
+static constexpr float PITCH_SCALE = 0.0075f;
 
 //Gimbal Starting angles
 static constexpr float YAW_STARTING_ANGLE = 0.0f;
