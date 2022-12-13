@@ -19,7 +19,7 @@ public:
                tap::motor::MOTOR7,
                tap::can::CanBus::CAN_BUS2,
                false,
-               "Yaw Motor"),
+               "Feeder Motor"),
       targetRPM(0.0f),
       currentFeederMotorSpeed(0.0f),
       rpmPid(feederPid.PID_KP, feederPid.PID_KI, feederPid.PID_KD, 
@@ -31,15 +31,11 @@ public:
 
     const char* getName() override {return "feeder subsystem";}
 
-    void setTargetRPM(float RPM) { targetRPM = RPM; }
+    void setTargetRPM(float RPM);
 
     float getFeederMotorRPM() const {return feederMotor.isMotorOnline() ? feederMotor.getShaftRPM() : 0.0f; }
 
     void updateFeederPid(modm::Pid<float>* pid, tap::motor::DjiMotor* const motor, float desiredRpm);
-
-    void controllerInput(int SwitchInput);
-    void cvInput(int CVSwitchInput);
-    void noInputs();
 
     bool motorOnline(){ return feederMotor.isMotorOnline();
     }

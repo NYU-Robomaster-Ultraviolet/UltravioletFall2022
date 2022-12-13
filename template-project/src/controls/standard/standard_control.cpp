@@ -51,13 +51,11 @@ RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 HoldCommandMapping rightSwitchUp(drivers(), {&gimbalMovement}, 
 RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
 
-HoldCommandMapping leftSwitchMid(drivers(), {&feederMovement},
-RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
-
 HoldCommandMapping leftSwitchDown(drivers(), {&feederMovement},
 RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::DOWN));
-HoldCommandMapping rightSwitchMid(drivers(), {&chassisMovement}, RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
-HoldCommandMapping leftSwitchUp(drivers(), {&shootUser}, RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
+
+HoldCommandMapping leftSwitchUp(drivers(), {&shootUser}, 
+RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers){
     drivers->commandScheduler.registerSubsystem(&chassis);
@@ -70,7 +68,6 @@ void initializeSubsystems() {
     chassis.initialize();
     gimbal.initialize();
     feeder.initialize();
-	gimbal.initialize();
     shooter.initialize();
 }
 // Set default command here -----------------------------------------------
@@ -85,7 +82,6 @@ void startupCommands(src::Drivers* drivers) {
 void registerIOMappings(src::Drivers* drivers) {
     drivers->commandMapper.addMap(&rightSwitchMid);
     drivers->commandMapper.addMap(&rightSwitchUp);
-    drivers->commandMapper.addMap(&leftSwitchMid);
     drivers->commandMapper.addMap(&leftSwitchDown);
     drivers->commandMapper.addMap(&leftSwitchUp);
 }
