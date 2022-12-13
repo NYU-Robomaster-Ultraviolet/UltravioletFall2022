@@ -40,8 +40,7 @@ GimbalSubsystem gimbal(drivers());
 FeederSubsystem feeder(drivers());
 ShooterSubsystem shooter(drivers());
 // Robot Specific Controllers ------------------------------------------------
-MusicDisk disk;
-MusicPlayer sound_track(drivers(), disk);
+MusicPlayer sound_track(drivers(), PIANO_MAN, PIANO_MAN_BPM);
 GimbalInterface gimbalInterface(&gimbal);
 
 // Define commands here ---------------------------------------------------
@@ -71,10 +70,9 @@ void registerSubsystems(src::Drivers *drivers){
 }
 // Initialize subsystems here ---------------------------------------------
 void initializeSubsystems() {
-    //drivers()->leds.set(drivers()->leds.Red, true);
+    //sound_track.execute();
     chassis.initialize();
     gimbal.initialize();
-    //sound_track.execute();
     feeder.initialize();
     shooter.initialize();
 }
