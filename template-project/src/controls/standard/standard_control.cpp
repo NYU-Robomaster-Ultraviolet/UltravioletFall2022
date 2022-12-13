@@ -17,6 +17,8 @@
 #include "subsystems/shooter/shoot_user_command.hpp"
 #include "subsystems/chassis/chassis_movement_command.hpp"
 #include "subsystems/gimbal/gimbal_movement_command.hpp"
+#include "subsystems/music/music_player.hpp"
+#include "subsystems/gimbal/gimbal_motor_interface.hpp"
 #include "subsystems/feeder/feeder_movement_command.hpp"
 
 
@@ -27,6 +29,7 @@ using namespace tap::control;
 using namespace tap::communication::serial;
 using namespace chassis;
 using namespace gimbal;
+using namespace music;
 using namespace feeder;
 using namespace shooter;
 
@@ -37,9 +40,12 @@ GimbalSubsystem gimbal(drivers());
 FeederSubsystem feeder(drivers());
 ShooterSubsystem shooter(drivers());
 // Robot Specific Controllers ------------------------------------------------
+MusicDisk disk;
+MusicPlayer sound_track(drivers(), disk);
+GimbalInterface gimbalInterface(&gimbal);
 
 // Define commands here ---------------------------------------------------
-ChassisMovementCommand chassisMovement(&chassis, drivers());
+ChassisMovementCommand chassisMovement(&chassis, drivers(), &gimbalInterface);
 GimbalMovementCommand gimbalMovement(&gimbal, drivers());
 FeederMovementCommand feederMovement(&feeder, drivers());
 ShootUserCommand shootUser(&shooter, drivers());
@@ -65,14 +71,16 @@ void registerSubsystems(src::Drivers *drivers){
 }
 // Initialize subsystems here ---------------------------------------------
 void initializeSubsystems() {
+    //drivers()->leds.set(drivers()->leds.Red, true);
     chassis.initialize();
     gimbal.initialize();
+    //sound_track.execute();
     feeder.initialize();
     shooter.initialize();
 }
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers* drivers) {
-   // chassis.setDefaultCommand(&chassisMovement);
+    //chassis.setDefaultCommand(&chassisMovement);
 }
 // Set Commands scheduled on startup
 void startupCommands(src::Drivers* drivers) {
@@ -81,7 +89,7 @@ void startupCommands(src::Drivers* drivers) {
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers* drivers) {
     drivers->commandMapper.addMap(&rightSwitchMid);
-    drivers->commandMapper.addMap(&rightSwitchUp);
+    //drivers->commandMapper.addMap(&rightSwitchUp);
     drivers->commandMapper.addMap(&leftSwitchDown);
     drivers->commandMapper.addMap(&leftSwitchUp);
 }
